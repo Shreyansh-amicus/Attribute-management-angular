@@ -12,3 +12,7 @@ Angular offers both approaches because the ngModule approach has been present si
 
 - In what kind of project would you pick standalone over NgModule?      
 Standalone has been the default approach that Angular has opted since Angular 17 because it reduces a lot of boilerplate code and makes development easier and faster as compared to NgModules. I would prefer standalone over NgModules in almost every situation where we don't have to explicity use the rigid, heavy modular approach provided by the NgModules.
+
+### Task 2 - Create TypeScript interfaces
+
+![Interfaces](screenshots/Interfaces.png)
