@@ -32,3 +32,11 @@ If this service was provided at a component level, then we would have to describ
 
 - Create AttributeListComponent
 ![Create AttributeListComponent](screenshots/Create%20AttributeList%20component.png)
+
+- Attribute list
+![Attribute list](screenshots/Attribute%20list.png)
+
+### Task 5 - Create AttributeCardComponent 
+
+- Create AttributeCardComponent 
+![Create AttributeCardComponent](screenshots/Create%20AttributeCard%20Component.png)
