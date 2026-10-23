@@ -27,3 +27,8 @@ Standalone has been the default approach that Angular has opted since Angular 17
 
 - What would change if you provided this service at component level? When would you choose that?             
 If this service was provided at a component level, then we would have to describe the in memory attribute array and all the related methods to the attribute array in each and every component where it is used, whereas with the service AttributeService we have a global store through which all the components can share the data instead of repeating the same code at multiple places. I would choose the component level definition of the array and methods where only that specific component uses the data and methods of the service.
+
+### Task 4 - Create AttributeListComponent
+
+- Create AttributeListComponent
+![Create AttributeListComponent](screenshots/Create%20AttributeList%20component.png)

@@ -1,0 +1,77 @@
+<div class="container mx-auto p-6">
+  <!-- Table Container Wrapper for clean borders and responsive horizontal scrolling -->
+  <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm bg-white">
+    <table class="min-w-full divide-y divide-gray-200 text-left text-sm">
+      
+      <!-- Table Header -->
+      <thead class="bg-gray-50 text-xs font-semibold uppercase tracking-wider text-gray-700">
+        <tr>
+          <th scope="col" class="px-6 py-3.5">ID</th>
+          <th scope="col" class="px-6 py-3.5">Name</th>
+          <th scope="col" class="px-6 py-3.5">Business Unit</th>
+          <th scope="col" class="px-6 py-3.5">Company</th>
+          <th scope="col" class="px-6 py-3.5">Customer Location</th>
+          <th scope="col" class="px-6 py-3.5">Status</th>
+          <th scope="col" class="px-6 py-3.5">Created On</th>
+        </tr>
+      </thead>
+      
+      <!-- Table Body -->
+      <tbody class="divide-y divide-gray-200 text-gray-600">
+        @for(attr of attributes; track attr.AttributeId) {
+          <tr class="hover:bg-gray-50 transition-colors">
+            
+            <!-- ID (Monospace font styling) -->
+            <td class="whitespace-nowrap px-6 py-4 font-mono text-xs text-gray-400">
+              #{{ attr.AttributeId }}
+            </td>
+            
+            <!-- Name (Darker, bolder text for emphasis) -->
+            <td class="whitespace-nowrap px-6 py-4 font-medium text-gray-900">
+              {{ attr.AttributeName }}
+            </td>
+            
+            <!-- Business Unit -->
+            <td class="whitespace-nowrap px-6 py-4 text-gray-700">
+              {{ attr.BusinessUnitName }}
+            </td>
+            
+            <!-- Company -->
+            <td class="whitespace-nowrap px-6 py-4">
+              <span [class.text-gray-400]="!attr.CompanyName">
+                {{ attr.CompanyName || 'No company' }}
+              </span>
+            </td>
+            
+            <!-- Customer Location -->
+            <td class="whitespace-nowrap px-6 py-4">
+              <span [class.text-gray-400]="!attr.CustomerLocationName">
+                {{ attr.CustomerLocationName || 'Global' }}
+              </span>
+            </td>
+            
+            <!-- Active (Styled as modern subtle badge instead of raw boolean text) -->
+            <td class="whitespace-nowrap px-6 py-4">
+              @if(attr.IsActive) {
+                <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                  Active
+                </span>
+              } @else {
+                <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                  Inactive
+                </span>
+              }
+            </td>
+            
+            <!-- Created On (Formatted with clean built-in date pipe) -->
+            <td class="whitespace-nowrap px-6 py-4 text-gray-500">
+              {{ attr.CreatedOn | date:'mediumDate' }}
+            </td>
+
+          </tr>
+        }
+      </tbody>
+      
+    </table>
+  </div>
+</div>

@@ -5,6 +5,7 @@ import { IAttributeModel } from '../models/IAttribute.model';
 export class AttributeService {
   mockAttributes: IAttributeModel[] = [
     {
+      // Combination 1: Both values are present
       AttributeId: 101,
       AttributeName: 'Cost Center Code',
       BusinessUnitName: 'Finance',
@@ -17,32 +18,30 @@ export class AttributeService {
       UpdatedBy: 'System Admin',
     },
     {
+      // Combination 2: Company is present, Location is completely omitted (undefined)
       AttributeId: 102,
       AttributeName: 'Employee Onboarding Status',
       BusinessUnitName: 'Human Resources',
       CompanyName: 'Globex Industries',
-      CustomerLocationName: 'London, UK',
       IsActive: true,
       CreatedOn: new Date('2025-03-22T14:15:00Z'),
       CreatedBy: 'David Chen',
-      // Optional fields left out to test undefined handling
     },
     {
+      // Combination 3: Company is completely omitted (undefined), Location is present
       AttributeId: 103,
       AttributeName: 'Legacy Machine ID',
       BusinessUnitName: 'Operations',
-      CompanyName: 'Initech Software',
       CustomerLocationName: 'Berlin, Germany',
-      IsActive: false, // Inactive
+      IsActive: false,
       CreatedOn: new Date('2024-11-05T09:00:00Z'),
       CreatedBy: 'Elena Rostova',
     },
     {
+      // Combination 4: Both fields are completely omitted (undefined)
       AttributeId: 104,
       AttributeName: 'Campaign ROI Threshold',
       BusinessUnitName: 'Marketing',
-      CompanyName: 'Acme Corp',
-      CustomerLocationName: 'Tokyo, Japan',
       IsActive: true,
       CreatedOn: new Date('2025-06-18T11:45:00Z'),
       CreatedBy: 'Kenji Sato',
@@ -50,31 +49,34 @@ export class AttributeService {
       UpdatedBy: 'Kenji Sato',
     },
     {
+      // Combination 5: Company is an empty string, Location is present
       AttributeId: 105,
       AttributeName: 'Warehouse Fleet Capacity',
       BusinessUnitName: 'Supply Chain',
-      CompanyName: 'Umbrella Corp',
+      CompanyName: '',
       CustomerLocationName: 'Sydney, Australia',
       IsActive: true,
       CreatedOn: new Date('2025-08-01T16:20:00Z'),
       CreatedBy: 'Marcus Vance',
     },
     {
+      // Combination 6: Company is present, Location is an empty string
       AttributeId: 106,
       AttributeName: 'Deprecated Tax Bracket',
       BusinessUnitName: 'Finance',
       CompanyName: 'Globex Industries',
-      CustomerLocationName: 'London, UK',
-      IsActive: false, // Inactive
+      CustomerLocationName: '',
+      IsActive: false,
       CreatedOn: new Date('2024-05-12T07:10:00Z'),
       CreatedBy: 'Sarah Jenkins',
     },
     {
+      // Combination 7: Both are empty strings
       AttributeId: 107,
       AttributeName: 'Remote Work Eligibility',
       BusinessUnitName: 'Human Resources',
-      CompanyName: 'Umbrella Corp',
-      CustomerLocationName: 'New York, USA',
+      CompanyName: '',
+      CustomerLocationName: '',
       IsActive: true,
       CreatedOn: new Date('2025-09-10T10:05:00Z'),
       CreatedBy: 'Amara Okafor',
@@ -82,14 +84,16 @@ export class AttributeService {
       UpdatedBy: 'David Chen',
     },
     {
+      // Combination 8: Baseline valid data copy to maintain diversity balance
       AttributeId: 108,
       AttributeName: 'Archived Vendor Tier',
       BusinessUnitName: 'Supply Chain',
       CompanyName: 'Initech Software',
       CustomerLocationName: 'Berlin, Germany',
-      IsActive: false, // Inactive
+      IsActive: false,
       CreatedOn: new Date('2024-08-30T13:50:00Z'),
       CreatedBy: 'David Chen',
     },
   ];
+
 }
