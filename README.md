@@ -40,3 +40,9 @@ If this service was provided at a component level, then we would have to describ
 
 - Create AttributeCardComponent 
 ![Create AttributeCardComponent](screenshots/Create%20AttributeCard%20Component.png)
+
+- Attribute card view
+![Attribute card view](screenshots/Card%20view.png)
+
+- Attribute table view
+![Attribute list view](screenshots/List%20view.png)
