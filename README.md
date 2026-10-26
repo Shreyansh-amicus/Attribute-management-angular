@@ -46,3 +46,22 @@ If this service was provided at a component level, then we would have to describ
 
 - Attribute table view
 ![Attribute list view](screenshots/List%20view.png)
+
+### Task 6 - Implement ngOnInit, ngOnChanges, ngOnDestroy in AttributeCardComponent
+
+- Console.log() after switching to card layout         
+![Console.log() after switching to card layout](screenshots/Hooks%20sequence%20after%20the%20card%20toggle.png)
+
+- Console.log() after switching back to table layout          
+![Console.log() after switching back to table layout](screenshots/Hooks%20sequence%20after%20the%20table%20toggle.png)
+
+- In what order do hooks fire when the list loads?         
+No hooks fire when the list loads since the table layout is the default layout in the attribute-list component.
+
+- What fires when you switch between table/card view?              
+When the toggle is switched from the table view to the card view, ngOnChanges and ngOnInit hooks are fired for each card with its id since the attribute-card component inherits the attributes as @Input from its parent attribute-list component and initializes the card view or layout.           
+Whereas when the toggle is switched from the card view to the table view, the card layout no longer exists in the view, therefore the ngOnDestroy hook is fired for each attribute with its id.
+
+- What fires when you remove an attribute? What real-world cleanup would you do in ngOnDestroy?           
+When an attribute is removed from the list and its corresponding AttributeCard component is removed from the view, Angular calls ngOnDestroy() for that card instance. The console log displays the ID of the attribute associated with the destroyed component.         
+Real world leanup that I would perform in ngOnDestroy hook is to clear up any tasks such as setTimeout and setInterval and clear up any resource which isn't needed any longer to avoid memory leak issues.

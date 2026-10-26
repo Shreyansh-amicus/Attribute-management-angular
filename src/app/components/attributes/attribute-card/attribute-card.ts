@@ -10,4 +10,16 @@ import { DatePipe } from '@angular/common';
 })
 export class AttributeCard {
   @Input({required : true}) attribute !: IAttributeModel;
+
+  ngOnInit(): void {
+    console.log("ngOnInit() hook fired for ",this.attribute.AttributeId);
+  }
+
+  ngOnChanges() : void{
+    console.log("ngOnChanges() hook fired for ", this.attribute.AttributeId);
+  }
+
+  ngOnDestroy() : void{
+    console.log("ngOnDestroy() hook fired for ",this.attribute.AttributeId);
+  }
 }
