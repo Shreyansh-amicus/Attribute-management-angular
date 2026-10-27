@@ -65,3 +65,6 @@ Whereas when the toggle is switched from the card view to the table view, the ca
 - What fires when you remove an attribute? What real-world cleanup would you do in ngOnDestroy?           
 When an attribute is removed from the list and its corresponding AttributeCard component is removed from the view, Angular calls ngOnDestroy() for that card instance. The console log displays the ID of the attribute associated with the destroyed component.         
 Real world leanup that I would perform in ngOnDestroy hook is to clear up any tasks such as setTimeout and setInterval and clear up any resource which isn't needed any longer to avoid memory leak issues.
+
+### Task 7 - Custom attribute directive appActiveStatus
+![ custom attribute directive appActiveStatus](screenshots/Status%20badge%20with%20tooltip.png)

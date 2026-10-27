@@ -2,9 +2,10 @@ import { Component, inject } from '@angular/core';
 import { AttributeService } from '../../../services/attribute-service';
 import { DatePipe } from '@angular/common';
 import { AttributeCard } from '../attribute-card/attribute-card';
+import { AppActiveStatus } from '../../../directives/app-active-status';
 
 @Component({
-  imports: [DatePipe, AttributeCard],
+  imports: [DatePipe, AttributeCard, AppActiveStatus],
   selector: 'app-attribute-list',
   styleUrl: './attribute-list.css',
   templateUrl: './attribute-list.html',
