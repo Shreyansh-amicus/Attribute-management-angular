@@ -71,3 +71,16 @@ Real world leanup that I would perform in ngOnDestroy hook is to clear up any ta
 
 ### Task 8 - Create a custom pipe RelativeTimePipe
 ![Create a custom pipe RelativeTimePipe](screenshots/Relative%20time.png)
+
+### Task 9 - Add a search box
+
+- Add a search box        
+![Add a search box](screenshots/Search%20box.png)
+
+- Why use a structural directive instead of a pipe?         
+A structural directive controls whether an element exists in the DOM.
+Here, it creates the row/card when the attribute matches the search
+term and removes it when it doesn't.
+
+A pipe would be more appropriate when the goal is to transform an
+array into a filtered array for display.
