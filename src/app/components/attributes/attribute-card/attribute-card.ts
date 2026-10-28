@@ -1,9 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { IAttributeModel } from '../../../models/IAttribute.model';
 import { DatePipe } from '@angular/common';
+import { RelativeTimePipe } from '../../../pipes/relative-time-pipe';
+import { AppActiveStatus } from '../../../directives/app-active-status';
 
 @Component({
-  imports: [DatePipe],
+  imports: [DatePipe, RelativeTimePipe, AppActiveStatus],
   selector: 'app-attribute-card',
   styleUrl: './attribute-card.css',
   templateUrl: './attribute-card.html',

@@ -68,3 +68,6 @@ Real world leanup that I would perform in ngOnDestroy hook is to clear up any ta
 
 ### Task 7 - Custom attribute directive appActiveStatus
 ![ custom attribute directive appActiveStatus](screenshots/Status%20badge%20with%20tooltip.png)
+
+### Task 8 - Create a custom pipe RelativeTimePipe
+![Create a custom pipe RelativeTimePipe](screenshots/Relative%20time.png)
