@@ -5,15 +5,14 @@ import { ICompany } from '../models/ICompany.model';
 import { ICustomerLocationLookUp } from '../models/ILookup.model';
 
 @Injectable({
-  providedIn : 'root'
+  providedIn: 'root',
 })
 export class AttributeService {
-
   readonly debugInstanceId = Math.random().toString(36).slice(2);
 
-constructor() {
-  console.log('AttributeService created:', this.debugInstanceId);
-}
+  constructor() {
+    console.log('AttributeService created:', this.debugInstanceId);
+  }
 
   mockAttributes: IAttributeModel[] = [
     {
@@ -136,21 +135,34 @@ constructor() {
   ];
 
   addAttribute(attribute: IAttributeModel): void {
-  const alreadyExists = this.mockAttributes.some(
-    item => item.AttributeId === attribute.AttributeId
-  );
-
-  if (alreadyExists) {
-    console.warn(
-      'Duplicate attribute prevented:',
-      attribute.AttributeId
+    const alreadyExists = this.mockAttributes.some(
+      (item) => item.AttributeId === attribute.AttributeId,
     );
-    return;
+
+    if (alreadyExists) {
+      console.warn('Duplicate attribute prevented:', attribute.AttributeId);
+      return;
+    }
+
+    this.mockAttributes = [...this.mockAttributes, attribute];
+
+    console.log('Attribute added:', attribute.AttributeId);
+    console.log('Total attributes:', this.mockAttributes.length);
   }
 
-  this.mockAttributes = [...this.mockAttributes, attribute];
+  updateAttribute(updatedAttribute: IAttributeModel): boolean {
+    const index = this.mockAttributes.findIndex(
+      (attribute) => attribute.AttributeId === updatedAttribute.AttributeId,
+    );
 
-  console.log('Attribute added:', attribute.AttributeId);
-  console.log('Total attributes:', this.mockAttributes.length);
-}
+    if (index === -1) {
+      return false;
+    }
+
+    this.mockAttributes = this.mockAttributes.map((attribute) =>
+      attribute.AttributeId === updatedAttribute.AttributeId ? updatedAttribute : attribute,
+    );
+
+    return true;
+  }
 }

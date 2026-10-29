@@ -8,9 +8,10 @@ import { attributeNameValidator } from '../../validator/attribute-name.validator
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AttributeService } from '../../services/attribute-service';
 import { IAttributeModel } from '../../models/IAttribute.model';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   selector: 'app-add-attribute-page',
   styleUrl: './add-attribute.css',
   templateUrl: './add-attribute.html',
@@ -19,6 +20,7 @@ export class AddAttributePage {
   private readonly lookupService = inject(Lookup);
   private readonly destroyRef = inject(DestroyRef);
   private readonly attributeService = inject(AttributeService);
+  private readonly router = inject(Router);
 
   businessUnits: IBusinessUnit[] = this.lookupService.getBusinessUnits();
   allCustomerLocations: ICustomerLocationLookUp[] = this.lookupService.getCustomerLocation();
@@ -126,8 +128,6 @@ export class AddAttributePage {
 
     this.attributeService.addAttribute(newAttribute);
 
-    this.attributeService.addAttribute(newAttribute);
-
     console.log('Form page sees:', this.attributeService.mockAttributes);
 
     this.successMessage = 'Attribute added successfully!';
@@ -144,5 +144,6 @@ export class AddAttributePage {
 
     this.filteredCustomerLocations = [];
     this.submitted = false;
+    void this.router.navigate(['/']);
   }
 }

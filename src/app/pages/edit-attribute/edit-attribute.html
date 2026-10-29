@@ -1,0 +1,200 @@
+<div class="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+  <div class="mb-8">
+    <h2 class="text-3xl font-bold tracking-tight text-gray-900">
+      Edit Attribute
+    </h2>
+    <p class="mt-2 text-sm text-gray-500">
+      Update the attribute details below.
+    </p>
+  </div>
+
+  <form
+    #editForm="ngForm"
+    (ngSubmit)="onSubmit(editForm)"
+    (input)="formDirty = editForm.dirty"
+    (change)="formDirty = editForm.dirty"
+    novalidate
+    class="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8"
+  >
+    <!-- Attribute Name -->
+    <div>
+      <label for="attributeName" class="mb-2 block text-sm font-semibold text-gray-700">
+        Attribute Name <span class="text-red-500">*</span>
+      </label>
+
+      <input
+        id="attributeName"
+        name="AttributeName"
+        type="text"
+        [(ngModel)]="form.AttributeName"
+        #attributeName="ngModel"
+        required
+        minlength="3"
+        maxlength="50"
+        placeholder="e.g. Department-Code"
+        [class.border-red-500]="attributeName.invalid && (attributeName.touched || submitted)"
+        class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+      />
+
+      @if (attributeName.invalid && (attributeName.touched || submitted)) {
+        <div class="mt-2 space-y-1 text-sm text-red-600">
+          @if (attributeName.errors?.['required']) {
+            <p>Attribute name is required.</p>
+          }
+
+          @if (attributeName.errors?.['minlength']) {
+            <p>Attribute name must contain at least 3 characters.</p>
+          }
+
+          @if (attributeName.errors?.['maxlength']) {
+            <p>Attribute name cannot exceed 50 characters.</p>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Business Unit -->
+    <div>
+      <label for="businessUnit" class="mb-2 block text-sm font-semibold text-gray-700">
+        Business Unit <span class="text-red-500">*</span>
+      </label>
+
+      <select
+        id="businessUnit"
+        name="BusinessUnitId"
+        [(ngModel)]="form.BusinessUnitId"
+        #businessUnit="ngModel"
+        (ngModelChange)="onBusinessUnitChange()"
+        required
+        [class.border-red-500]="businessUnit.invalid && (businessUnit.touched || submitted)"
+        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+      >
+        <option [ngValue]="null">Select a business unit</option>
+
+        @for (unit of businessUnits; track unit.BusinessUnitId) {
+          <option [ngValue]="unit.BusinessUnitId">
+            {{ unit.BusinessUnitName }}
+          </option>
+        }
+      </select>
+
+      @if (businessUnit.invalid && (businessUnit.touched || submitted)) {
+        <p class="mt-2 text-sm text-red-600">
+          Please select a business unit.
+        </p>
+      }
+    </div>
+
+    <!-- Customer Location -->
+    <div>
+      <label for="customerLocation" class="mb-2 block text-sm font-semibold text-gray-700">
+        Customer Location <span class="text-red-500">*</span>
+      </label>
+
+      <select
+        id="customerLocation"
+        name="CustomerLocationId"
+        [(ngModel)]="form.CustomerLocationId"
+        #customerLocation="ngModel"
+        [disabled]="form.BusinessUnitId === null"
+        required
+        [class.border-red-500]="customerLocation.invalid && (customerLocation.touched || submitted)"
+        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-gray-100"
+      >
+        <option [ngValue]="null">
+          {{
+            form.BusinessUnitId === null
+              ? 'Select a business unit first'
+              : 'Select a customer location'
+          }}
+        </option>
+
+        @for (location of filteredCustomerLocations; track location.CustomerLocationId) {
+          <option [ngValue]="location.CustomerLocationId">
+            {{ location.CustomerLocationName }}
+          </option>
+        }
+      </select>
+
+      @if (customerLocation.invalid && (customerLocation.touched || submitted)) {
+        <p class="mt-2 text-sm text-red-600">
+          Please select a customer location.
+        </p>
+      }
+    </div>
+
+    <!-- Company -->
+    <div>
+      <label for="company" class="mb-2 block text-sm font-semibold text-gray-700">
+        Company <span class="text-red-500">*</span>
+      </label>
+
+      <select
+        id="company"
+        name="CompanyId"
+        [(ngModel)]="form.CompanyId"
+        #company="ngModel"
+        required
+        [class.border-red-500]="company.invalid && (company.touched || submitted)"
+        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+      >
+        <option [ngValue]="null">Select a company</option>
+
+        @for (item of companies; track item.CompanyId) {
+          <option [ngValue]="item.CompanyId">
+            {{ item.CompanyName }}
+          </option>
+        }
+      </select>
+
+      @if (company.invalid && (company.touched || submitted)) {
+        <p class="mt-2 text-sm text-red-600">
+          Please select a company.
+        </p>
+      }
+    </div>
+
+    <!-- Is Active -->
+    <div class="rounded-lg bg-gray-50 p-4">
+      <label for="isActive" class="flex cursor-pointer items-center gap-3">
+        <input
+          id="isActive"
+          type="checkbox"
+          name="IsActive"
+          [(ngModel)]="form.IsActive"
+          class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+        />
+
+        <span class="text-sm font-medium text-gray-700">
+          Active
+        </span>
+      </label>
+    </div>
+
+    <!-- Unsaved Changes Indicator -->
+    @if (editForm.dirty && !saved) {
+      <p class="rounded-lg bg-amber-50 p-3 text-sm text-amber-700">
+        You have unsaved changes.
+      </p>
+    }
+
+    <!-- Actions -->
+    <div class="flex flex-wrap items-center gap-3">
+      <button
+        type="submit"
+        [disabled]="editForm.invalid"
+        class="rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500"
+      >
+        Save Changes
+      </button>
+
+      <button
+        type="button"
+        (click)="cancel()"
+        class="rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

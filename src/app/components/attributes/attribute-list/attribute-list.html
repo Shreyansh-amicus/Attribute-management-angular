@@ -1,61 +1,61 @@
-
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
   <!-- Page Header -->
-  
-<!-- Page Header -->
-<div class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-  <div>
-    <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-      Attribute list
-    </h2>
-    <p class="mt-2 text-sm text-gray-500">
-      View and explore your available attributes.
-    </p>
-  </div>
+  <div
+    class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <div>
+      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        Attribute list
+      </h2>
+      <p class="mt-2 text-sm text-gray-500">
+        View and explore your available attributes.
+      </p>
+    </div>
 
-  <!-- Actions -->
-  <div class="flex flex-wrap items-center gap-3">
-    <!-- Add Attribute Button -->
-    <a
-      routerLink="/add-attribute"
-      class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
-    >
-      <span class="text-lg leading-none">+</span>
-      Add Attribute
-    </a>
-
-    <!-- View Toggle -->
-    <div
-      class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm"
-    >
-      <span class="text-sm font-medium text-gray-600">
-        {{ isTableView ? 'Table view' : 'Card view' }}
-      </span>
-
-      <button
-        type="button"
-        role="switch"
-        [attr.aria-checked]="isTableView"
-        [attr.aria-label]="isTableView ? 'Switch to card view' : 'Switch to table view'"
-        (click)="onClick()"
-        class="relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
-        [class.bg-blue-600]="isTableView"
-        [class.bg-violet-600]="!isTableView"
+    <!-- Actions -->
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Add Attribute Button -->
+      <a
+        routerLink="/add-attribute"
+        class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
       >
-        <span
-          class="pointer-events-none inline-flex h-6 w-6 transform items-center justify-center rounded-full bg-white shadow-md ring-1 ring-black/5 transition-transform duration-300 ease-in-out"
-          [class.translate-x-1]="isTableView"
-          [class.translate-x-7]="!isTableView"
-        >
-          <span class="text-[10px] font-bold text-gray-600">
-            {{ isTableView ? 'T' : 'C' }}
-          </span>
+        <span class="text-lg leading-none" aria-hidden="true">+</span>
+        Add Attribute
+      </a>
+
+      <!-- View Toggle -->
+      <div
+        class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm"
+      >
+        <span class="text-sm font-medium text-gray-600">
+          {{ isTableView ? 'Table view' : 'Card view' }}
         </span>
-      </button>
+
+        <button
+          type="button"
+          role="switch"
+          [attr.aria-checked]="isTableView"
+          [attr.aria-label]="
+            isTableView ? 'Switch to card view' : 'Switch to table view'
+          "
+          (click)="onClick()"
+          class="relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
+          [class.bg-blue-600]="isTableView"
+          [class.bg-violet-600]="!isTableView"
+        >
+          <span
+            class="pointer-events-none inline-flex h-6 w-6 transform items-center justify-center rounded-full bg-white shadow-md ring-1 ring-black/5 transition-transform duration-300 ease-in-out"
+            [class.translate-x-1]="isTableView"
+            [class.translate-x-7]="!isTableView"
+          >
+            <span class="text-[10px] font-bold text-gray-600">
+              {{ isTableView ? 'T' : 'C' }}
+            </span>
+          </span>
+        </button>
+      </div>
     </div>
   </div>
-</div>
-
 
   <!-- Search Box -->
   <div class="mb-6">
@@ -83,32 +83,69 @@
 
   <!-- Table View -->
   @if (isTableView) {
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div
+      class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+    >
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 text-left text-sm">
           <!-- Table Header -->
           <thead class="bg-gray-50">
             <tr>
-              <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <th
+                scope="col"
+                class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
+              >
                 ID
               </th>
-              <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+              <th
+                scope="col"
+                class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
+              >
                 Name
               </th>
-              <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+              <th
+                scope="col"
+                class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
+              >
                 Business Unit
               </th>
-              <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+              <th
+                scope="col"
+                class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
+              >
                 Company
               </th>
-              <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+              <th
+                scope="col"
+                class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
+              >
                 Customer Location
               </th>
-              <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+              <th
+                scope="col"
+                class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
+              >
                 Status
               </th>
-              <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+              <th
+                scope="col"
+                class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
+              >
                 Created On
+              </th>
+
+              <!-- New Actions Column -->
+              <th
+                scope="col"
+                class="whitespace-nowrap px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500"
+              >
+                Actions
               </th>
             </tr>
           </thead>
@@ -122,13 +159,17 @@
               >
                 <!-- ID -->
                 <td class="whitespace-nowrap px-6 py-4">
-                  <span class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs font-medium text-gray-500">
+                  <span
+                    class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs font-medium text-gray-500"
+                  >
                     #{{ attr.AttributeId }}
                   </span>
                 </td>
 
                 <!-- Name -->
-                <td class="whitespace-nowrap px-6 py-4 font-semibold text-gray-900">
+                <td
+                  class="whitespace-nowrap px-6 py-4 font-semibold text-gray-900"
+                >
                   {{ attr.AttributeName }}
                 </td>
 
@@ -173,6 +214,18 @@
                 <td class="whitespace-nowrap px-6 py-4 text-gray-500">
                   {{ attr.CreatedOn | relativeTime }}
                 </td>
+
+                <!-- Edit Action -->
+                <td class="whitespace-nowrap px-6 py-4 text-right">
+                  <a
+                    [routerLink]="['/edit-attribute', attr.AttributeId]"
+                    [attr.aria-label]="'Edit ' + attr.AttributeName"
+                    class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+                  >
+                    <!--  -->
+                    Edit
+                  </a>
+                </td>
               </tr>
             }
           </tbody>
@@ -181,12 +234,14 @@
     </div>
   } @else {
     <!-- Card View -->
-    <div class="grid grid-cols-1 items-stretch gap-5 py-2 sm:grid-cols-2 xl:grid-cols-3">
+    <div
+      class="grid grid-cols-1 items-stretch gap-5 py-2 sm:grid-cols-2 xl:grid-cols-3"
+    >
       @for (attr of attributes; track attr.AttributeId) {
         <app-attribute-card
           *appFilterBy="attr; searchTerm: searchTerm"
           [attribute]="attr"
-        />  
+        />
       }
     </div>
   }

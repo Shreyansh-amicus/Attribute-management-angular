@@ -1,12 +1,28 @@
-
 <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6">
   <div class="mb-8">
-    <h2 class="text-3xl font-bold tracking-tight text-gray-900">
-      Add Attribute
-    </h2>
-    <p class="mt-2 text-sm text-gray-500">
-      Enter the attribute details below.
-    </p>
+    <a
+      routerLink="/"
+      class="mb-5 cursor-pointer bg-slate-100 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        class="h-4 w-4"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+        />
+      </svg>
+      Back to attributes
+    </a>
+    <h2 class="text-3xl font-bold tracking-tight text-gray-900">Add Attribute</h2>
+    <p class="mt-2 text-sm text-gray-500">Enter the attribute details below.</p>
   </div>
 
   <form
@@ -69,9 +85,7 @@
       </select>
 
       @if (showError('BusinessUnitId')) {
-        <p class="mt-2 text-sm text-red-600">
-          Please select a business unit.
-        </p>
+        <p class="mt-2 text-sm text-red-600">Please select a business unit.</p>
       }
     </div>
 
@@ -103,9 +117,7 @@
       </select>
 
       @if (showError('CustomerLocationId')) {
-        <p class="mt-2 text-sm text-red-600">
-          Please select a customer location.
-        </p>
+        <p class="mt-2 text-sm text-red-600">Please select a customer location.</p>
       }
     </div>
 
@@ -131,9 +143,7 @@
       </select>
 
       @if (showError('CompanyId')) {
-        <p class="mt-2 text-sm text-red-600">
-          Please select a company.
-        </p>
+        <p class="mt-2 text-sm text-red-600">Please select a company.</p>
       }
     </div>
 
@@ -147,9 +157,7 @@
           class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
         />
 
-        <span class="text-sm font-medium text-gray-700">
-          Active
-        </span>
+        <span class="text-sm font-medium text-gray-700"> Active </span>
       </label>
     </div>
 
@@ -163,7 +171,11 @@
     <!-- Submit -->
     <div
       class="inline-block"
-      [attr.title]="attributeForm.invalid ? 'Complete all required fields correctly to enable submission.' : null"
+      [attr.title]="
+        attributeForm.invalid
+          ? 'Complete all required fields correctly to enable submission.'
+          : null
+      "
     >
       <button
         type="submit"
