@@ -78,6 +78,7 @@ export class AddAttributePage {
   }
 
   onSubmit(): void {
+    console.count('onSubmit called');
     this.submitted = true;
     this.successMessage = '';
 
@@ -121,12 +122,9 @@ export class AddAttributePage {
       CreatedBy: 'Admin',
     };
 
-    console.log(
-  'FORM service ID:',
-  this.attributeService.debugInstanceId
-);
+    console.log('FORM service ID:', this.attributeService.debugInstanceId);
 
-this.attributeService.addAttribute(newAttribute);
+    this.attributeService.addAttribute(newAttribute);
 
     this.attributeService.addAttribute(newAttribute);
 

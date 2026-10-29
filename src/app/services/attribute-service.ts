@@ -136,7 +136,21 @@ constructor() {
   ];
 
   addAttribute(attribute: IAttributeModel): void {
-    this.mockAttributes = [...this.mockAttributes, attribute];
-    console.log('Service array after adding:', this.mockAttributes);
+  const alreadyExists = this.mockAttributes.some(
+    item => item.AttributeId === attribute.AttributeId
+  );
+
+  if (alreadyExists) {
+    console.warn(
+      'Duplicate attribute prevented:',
+      attribute.AttributeId
+    );
+    return;
   }
+
+  this.mockAttributes = [...this.mockAttributes, attribute];
+
+  console.log('Attribute added:', attribute.AttributeId);
+  console.log('Total attributes:', this.mockAttributes.length);
+}
 }
