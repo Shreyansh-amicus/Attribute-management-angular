@@ -84,3 +84,6 @@ term and removes it when it doesn't.
 
 A pipe would be more appropriate when the goal is to transform an
 array into a filtered array for display.
+
+### Task 10 - Create AddAttributeComponent
+![Create AddAttributeComponent](screenshots/Add%20attribute%20component.png)
