@@ -1,4 +1,4 @@
-import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Input, OnChanges, TemplateRef, ViewContainerRef } from '@angular/core';
 
 interface FilterableAttribute {
   AttributeName ?: string | null;
@@ -8,7 +8,7 @@ interface FilterableAttribute {
 @Directive({
   selector: '[appFilterBy]',
 })
-export class FilterBy {
+export class FilterBy implements OnChanges {
   @Input() appFilterBy !: FilterableAttribute;
   @Input() appFilterBySearchTerm = '';
 

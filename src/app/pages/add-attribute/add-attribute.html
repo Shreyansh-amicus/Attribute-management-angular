@@ -1,0 +1,181 @@
+
+<div class="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+  <div class="mb-8">
+    <h2 class="text-3xl font-bold tracking-tight text-gray-900">
+      Add Attribute
+    </h2>
+    <p class="mt-2 text-sm text-gray-500">
+      Enter the attribute details below.
+    </p>
+  </div>
+
+  <form
+    [formGroup]="attributeForm"
+    (ngSubmit)="onSubmit()"
+    novalidate
+    class="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8"
+  >
+    <!-- Attribute Name -->
+    <div>
+      <label for="attributeName" class="mb-2 block text-sm font-semibold text-gray-700">
+        Attribute Name <span class="text-red-500">*</span>
+      </label>
+
+      <input
+        id="attributeName"
+        type="text"
+        formControlName="AttributeName"
+        placeholder="e.g. Department-Code"
+        [class.border-red-500]="showError('AttributeName')"
+        class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+      />
+
+      @if (showError('AttributeName')) {
+        <div class="mt-2 space-y-1 text-sm text-red-600">
+          @if (attributeForm.controls.AttributeName.hasError('required')) {
+            <p>Attribute name is required.</p>
+          }
+
+          @if (attributeForm.controls.AttributeName.hasError('minlength')) {
+            <p>Attribute name must contain at least 3 characters.</p>
+          }
+
+          @if (attributeForm.controls.AttributeName.hasError('invalidAttributeName')) {
+            <p>Only letters, numbers, spaces and hyphens are allowed.</p>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Business Unit -->
+    <div>
+      <label for="businessUnit" class="mb-2 block text-sm font-semibold text-gray-700">
+        Business Unit <span class="text-red-500">*</span>
+      </label>
+
+      <select
+        id="businessUnit"
+        formControlName="BusinessUnitId"
+        [class.border-red-500]="showError('BusinessUnitId')"
+        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+      >
+        <option [ngValue]="null">Select a business unit</option>
+
+        @for (unit of businessUnits; track unit.BusinessUnitId) {
+          <option [ngValue]="unit.BusinessUnitId">
+            {{ unit.BusinessUnitName }}
+          </option>
+        }
+      </select>
+
+      @if (showError('BusinessUnitId')) {
+        <p class="mt-2 text-sm text-red-600">
+          Please select a business unit.
+        </p>
+      }
+    </div>
+
+    <!-- Customer Location -->
+    <div>
+      <label for="customerLocation" class="mb-2 block text-sm font-semibold text-gray-700">
+        Customer Location <span class="text-red-500">*</span>
+      </label>
+
+      <select
+        id="customerLocation"
+        formControlName="CustomerLocationId"
+        [class.border-red-500]="showError('CustomerLocationId')"
+        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-gray-100"
+      >
+        <option [ngValue]="null">
+          {{
+            attributeForm.controls.BusinessUnitId.value === null
+              ? 'Select a business unit first'
+              : 'Select a customer location'
+          }}
+        </option>
+
+        @for (location of filteredCustomerLocations; track location.CustomerLocationId) {
+          <option [ngValue]="location.CustomerLocationId">
+            {{ location.CustomerLocationName }}
+          </option>
+        }
+      </select>
+
+      @if (showError('CustomerLocationId')) {
+        <p class="mt-2 text-sm text-red-600">
+          Please select a customer location.
+        </p>
+      }
+    </div>
+
+    <!-- Company -->
+    <div>
+      <label for="company" class="mb-2 block text-sm font-semibold text-gray-700">
+        Company <span class="text-red-500">*</span>
+      </label>
+
+      <select
+        id="company"
+        formControlName="CompanyId"
+        [class.border-red-500]="showError('CompanyId')"
+        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+      >
+        <option [ngValue]="null">Select a company</option>
+
+        @for (company of companies; track company.CompanyId) {
+          <option [ngValue]="company.CompanyId">
+            {{ company.CompanyName }}
+          </option>
+        }
+      </select>
+
+      @if (showError('CompanyId')) {
+        <p class="mt-2 text-sm text-red-600">
+          Please select a company.
+        </p>
+      }
+    </div>
+
+    <!-- Is Active -->
+    <div class="rounded-lg bg-gray-50 p-4">
+      <label for="isActive" class="flex cursor-pointer items-center gap-3">
+        <input
+          id="isActive"
+          type="checkbox"
+          formControlName="IsActive"
+          class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+        />
+
+        <span class="text-sm font-medium text-gray-700">
+          Active
+        </span>
+      </label>
+
+      <p class="mt-1 pl-7 text-xs text-gray-500">
+        New attributes are active by default.
+      </p>
+    </div>
+
+    <!-- Success Message -->
+    @if (successMessage) {
+      <p role="status" class="rounded-lg bg-green-50 p-3 text-sm text-green-700">
+        {{ successMessage }}
+      </p>
+    }
+
+    <!-- Submit -->
+    <div
+      class="inline-block"
+      [attr.title]="attributeForm.invalid ? 'Complete all required fields correctly to enable submission.' : null"
+    >
+      <button
+        type="submit"
+        [disabled]="attributeForm.invalid"
+        class="rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500"
+      >
+        Add Attribute
+      </button>
+    </div>
+  </form>
+</div>

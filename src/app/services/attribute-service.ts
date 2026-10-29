@@ -1,8 +1,20 @@
-import { Service } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { IAttributeModel } from '../models/IAttribute.model';
+import { IBusinessUnit } from '../models/IBusinessUnit.model';
+import { ICompany } from '../models/ICompany.model';
+import { ICustomerLocationLookUp } from '../models/ILookup.model';
 
-@Service()
+@Injectable({
+  providedIn : 'root'
+})
 export class AttributeService {
+
+  readonly debugInstanceId = Math.random().toString(36).slice(2);
+
+constructor() {
+  console.log('AttributeService created:', this.debugInstanceId);
+}
+
   mockAttributes: IAttributeModel[] = [
     {
       // Combination 1: Both values are present
@@ -96,4 +108,35 @@ export class AttributeService {
     },
   ];
 
+  readonly businessUnits: IBusinessUnit[] = [
+    { BusinessUnitId: 1, BusinessUnitName: 'Finance' },
+    { BusinessUnitId: 2, BusinessUnitName: 'Human Resources' },
+    { BusinessUnitId: 3, BusinessUnitName: 'Operations' },
+    { BusinessUnitId: 4, BusinessUnitName: 'Marketing' },
+    { BusinessUnitId: 5, BusinessUnitName: 'Supply Chain' },
+  ];
+
+  readonly companies: ICompany[] = [
+    { CompanyId: 1, CompanyName: 'Acme Corp' },
+    { CompanyId: 2, CompanyName: 'Globex Industries' },
+    { CompanyId: 3, CompanyName: 'Initech Software' },
+  ];
+
+  readonly customerLocations: ICustomerLocationLookUp[] = [
+    { CustomerLocationId: 1, CustomerLocationName: 'New York, USA', BusinessUnitId: 1 },
+    { CustomerLocationId: 2, CustomerLocationName: 'Mumbai, India', BusinessUnitId: 1 },
+    { CustomerLocationId: 3, CustomerLocationName: 'Berlin, Germany', BusinessUnitId: 2 },
+    { CustomerLocationId: 4, CustomerLocationName: 'London, UK', BusinessUnitId: 2 },
+    { CustomerLocationId: 5, CustomerLocationName: 'Bengaluru, India', BusinessUnitId: 3 },
+    { CustomerLocationId: 6, CustomerLocationName: 'Chennai, India', BusinessUnitId: 3 },
+    { CustomerLocationId: 7, CustomerLocationName: 'Sydney, Australia', BusinessUnitId: 4 },
+    { CustomerLocationId: 8, CustomerLocationName: 'Singapore', BusinessUnitId: 4 },
+    { CustomerLocationId: 9, CustomerLocationName: 'Pune, India', BusinessUnitId: 5 },
+    { CustomerLocationId: 10, CustomerLocationName: 'Hyderabad, India', BusinessUnitId: 5 },
+  ];
+
+  addAttribute(attribute: IAttributeModel): void {
+    this.mockAttributes = [...this.mockAttributes, attribute];
+    console.log('Service array after adding:', this.mockAttributes);
+  }
 }
