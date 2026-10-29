@@ -87,3 +87,105 @@ array into a filtered array for display.
 
 ### Task 10 - Create AddAttributeComponent
 ![Create AddAttributeComponent](screenshots/Add%20attribute%20component.png)
+
+### Task 11 - Create EditAttributeComponent
+![Create EditAttributeComponent](screenshots/Edit%20attribute%20component.png)
+
+### Task 12 - Comparison: Reactive Forms vs Template-driven Forms
+
+In this project, I implemented both Angular form approaches to understand their differences in implementation, validation, maintainability, and testing.
+
+- **Add Attribute:** Implemented using Reactive Forms (`FormGroup`, `FormControl`, and `Validators`).
+- **Edit Attribute:** Implemented using Template-driven Forms (`ngModel` and `NgForm`), with existing attribute data pre-populated into the form.
+
+#### 1. What Was Easier and Harder in This Project?
+
+| Aspect | Reactive Forms — Add Attribute | Template-driven Forms — Edit Attribute |
+|---|---|---|
+| **Form setup** | Required creating a `FormGroup` and defining each control in TypeScript. | Required importing `FormsModule` and connecting template fields using `ngModel`. |
+| **Initial implementation** | Required more TypeScript setup, but the form structure was explicit. | Was quicker to get started with for a relatively simple form. |
+| **Validation** | Validators were configured centrally using `Validators.required`, `Validators.minLength`, and a custom validator. | Validation was configured in the template using attributes such as `required`, `minlength`, and `maxlength`. |
+| **Dependent dropdowns** | `valueChanges` made it straightforward to respond to Business Unit changes and filter Customer Locations. | Required handling template events and synchronizing the component's form model with dropdown selections. |
+| **Pre-populating data** | Values can be set using methods such as `setValue()` and `patchValue()`. | Existing values can be assigned to the component model and displayed using `ngModel`. |
+| **Form state** | Control values, validity, touched state, and dirty state are accessible through the form model. | `NgForm` exposes validity and dirty state, but controls must be registered and connected correctly. |
+| **Maintainability** | Complex validation and dynamic form behavior can be organized in TypeScript. | Can become harder to manage when the template grows and contains extensive validation or conditional logic. |
+
+**What I learned:**
+
+Reactive Forms required more initial TypeScript setup, but they made validation and dependent dropdown behavior easier to organize and understand. Template-driven Forms were relatively quick to implement for the Edit form because the fields could be connected directly to the component model using `ngModel`.
+
+However, the Template-driven approach requires careful management of form state, control registration, and changes to related dropdowns.
+
+#### 2. When Would I Choose Each Approach in a Real Project?
+
+##### Reactive Forms
+
+I would choose Reactive Forms when:
+
+- The form contains many fields or complex validation rules.
+- Fields depend on other fields, such as Customer Location depending on Business Unit.
+- The form requires dynamic controls or `FormArray`.
+- Validation logic needs to be reused or maintained separately from the HTML template.
+- The application requires explicit control over form state and validation.
+
+**Examples:**
+- Employee onboarding workflows.
+- Product configuration forms.
+- Registration workflows with complex validation.
+- Multi-step forms with conditional fields.
+
+##### Template-driven Forms
+
+I would choose Template-driven Forms when:
+
+- The form is relatively small and straightforward.
+- Most validation can be expressed using standard HTML attributes and Angular template directives.
+- The form has limited dynamic behavior.
+- The team prefers keeping most of the form configuration in the template.
+
+**Examples:**
+- Simple contact forms.
+- Basic feedback forms.
+- Small settings forms with a few fields.
+
+#### 3. Which Approach Is Easier to Unit Test, and Why?
+
+**Reactive Forms are generally more convenient for unit testing complex form behavior.**
+
+Reactive Forms expose their structure directly through TypeScript. A unit test can set control values, trigger validation, and check the form's validity without relying heavily on template interactions.
+
+For example, to test whether the attribute name is valid:
+
+```typescript
+component.attributeForm.controls.AttributeName.setValue('Department');
+
+expect(
+  component.attributeForm.controls.AttributeName.valid
+).toBeTrue();
+```
+
+To verify that the required validator works:
+
+```typescript
+component.attributeForm.controls.AttributeName.setValue('');
+
+expect(
+  component.attributeForm.controls.AttributeName.hasError('required')
+).toBeTrue();
+```
+
+Template-driven Forms can also be unit tested. However, Angular needs to initialize the template and register its `ngModel` controls before assertions can reliably inspect the form state. This can require additional fixture setup and asynchronous change detection.
+
+Therefore, Reactive Forms are generally easier to test when a form contains complex validation rules, dynamic controls, or substantial programmatic behavior. Template-driven Forms remain testable and are suitable for simpler forms.
+
+#### 4. Conclusion
+
+Both approaches are useful, and neither is universally better.
+
+In this project, Reactive Forms were a good fit for **Add Attribute** because the form uses a custom attribute-name validator and a dependent Customer Location dropdown. Template-driven Forms provided an opportunity to implement **Edit Attribute** using `ngModel` and `NgForm`.
+
+For a production application with complex forms, I would generally prefer Reactive Forms because their explicit structure, centralized validation configuration, and programmatic control make them easier to maintain and test.
+
+For smaller forms with minimal logic, Template-driven Forms can reduce the amount of setup required.
+
+Ultimately, I would choose the approach based on the form's complexity, validation requirements, maintainability, and testing needs rather than using one approach for every form.
