@@ -523,3 +523,99 @@ The AuthService manages the login state, and the LoginComponent provides a simpl
 The Add Attribute and Edit Attribute routes are now protected, while public routes remain accessible without authentication.
 
 This task demonstrates how Angular route guards can be used to control navigation based on authentication status.
+
+### Task 4 – Unsaved Changes Guard (CanDeactivate)
+
+#### 1. Overview
+
+The objective of this task was to implement an Angular `CanDeactivate` guard to prevent users from accidentally losing unsaved changes while editing an attribute.
+
+The guard was integrated with the existing dirty-check functionality from Assignment 1.
+
+Whenever a user attempts to navigate away from the Edit Attribute page, the application checks whether the form has unsaved changes.
+
+If the form is dirty, a confirmation dialog is displayed before allowing navigation.
+
+#### 2. Dirty Checking in EditAttributeComponent
+
+The Edit Attribute component uses Angular template-driven forms through `NgForm`.
+
+A template reference variable is used to access the form instance:
+
+`#editForm="ngForm"`
+
+The component accesses this form using Angular's `@ViewChild` decorator.
+
+The form's `dirty` property is used to determine whether the user has modified any form controls.
+
+- **Dirty:** The user has changed one or more form controls.
+- **Pristine:** The user has not modified the form controls.
+
+A `saved` flag is also maintained to identify whether the changes have been successfully saved.
+
+#### 3. UnsavedChangesGuard Implementation
+
+A functional `CanDeactivate` guard was created to control navigation away from the Edit Attribute component.
+
+The guard calls the component's `canDeactivate()` method.
+
+The method checks the following conditions:
+
+1. If the changes have already been saved, navigation is allowed.
+2. If the form is not dirty, navigation is allowed.
+3. If the form is dirty, a confirmation dialog is displayed.
+4. If the user confirms, navigation is allowed.
+5. If the user cancels, navigation is prevented.
+
+The browser's native `confirm()` function is used to display the confirmation dialog.
+
+#### 4. Guard Integration with Routing
+
+The `unsavedChangesGuard` was registered on the Edit Attribute route using `canDeactivate`.
+
+The route also retains the `authGuard` implemented in Task 3.
+
+Both guards serve different purposes:
+
+| Guard | Responsibility |
+|---|---|
+| AuthGuard (CanActivate) | Prevents unauthenticated users from accessing the Edit page |
+| UnsavedChangesGuard (CanDeactivate) | Prevents users from accidentally leaving the Edit page with unsaved changes |
+
+#### 5. Save and Cancel Behavior
+
+The guard is integrated with the existing save and cancel functionality.
+
+**Save:**
+
+- The attribute is updated through AttributeService.
+- The `saved` flag is set to `true` after a successful update.
+- The user is redirected to the Attribute List.
+- No confirmation dialog is displayed.
+
+**Cancel:**
+
+- The user is redirected to the Attribute List.
+- If the form is dirty, the confirmation dialog is displayed.
+- The user can either confirm navigation or remain on the Edit page.
+
+#### 6. Testing and Verification
+
+The following scenarios were tested:
+
+| Test Scenario | Expected Result |
+|---|---|
+| Navigate away without modifying the form | Navigation allowed |
+| Modify a field and click Cancel | Confirmation dialog displayed |
+| Confirm navigation | Navigation allowed |
+| Cancel navigation | User remains on Edit page |
+| Modify a field and save successfully | Changes saved without confirmation |
+| Press browser Back after modifying a field | Confirmation dialog displayed |
+
+#### 7. Conclusion
+
+The UnsavedChangesGuard was successfully implemented using Angular's functional `CanDeactivate` guard.
+
+It integrates with the existing `NgForm.dirty` property and the Edit Attribute component's save functionality.
+
+This helps prevent accidental loss of user changes and improves the reliability of the application's navigation flow.

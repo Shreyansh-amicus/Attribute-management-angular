@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
@@ -19,6 +19,8 @@ export class EditAttribute implements OnInit {
   private readonly router = inject(Router);
   private readonly attributeService = inject(AttributeService);
   private readonly lookupService = inject(Lookup);
+
+  @ViewChild('editForm') editForm?: NgForm;
 
   businessUnits: IBusinessUnit[] = this.lookupService.getBusinessUnits();
   companies: ICompany[] = this.lookupService.getCompanies();
@@ -141,19 +143,20 @@ export class EditAttribute implements OnInit {
 
   saved = false;
 
-  canDeactivate(): boolean {
-    if (this.saved) {
-      return true;
-    }
-
-    // The template-driven form is connected to the component model.
-    // We set this flag from the template's dirty state below.
-    if (!this.formDirty) {
-      return true;
-    }
-
-    return confirm('You have unsaved changes. Do you want to leave this page?');
+canDeactivate(): boolean {
+  // If changes have already been saved, allow navigation.
+  if (this.saved) {
+    return true;
   }
 
-  formDirty = false;
+  // If the form is not dirty, there are no unsaved changes.
+  if (!this.editForm?.dirty) {
+    return true;
+  }
+
+  // Ask for confirmation before leaving.
+  return confirm(
+    'You have unsaved changes. Do you want to leave this page?',
+  );
+}
 }
