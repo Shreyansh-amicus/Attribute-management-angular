@@ -1,7 +1,4 @@
 import { inject, Injectable, Service } from '@angular/core';
-import { ICompany } from '../models/ICompany.model';
-import { IBusinessUnit } from '../models/IBusinessUnit.model';
-import { ICustomerLocationLookUp } from '../models/ILookup.model';
 import { AttributeService } from './attribute-service';
 
 @Injectable({

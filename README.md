@@ -190,3 +190,146 @@ For a production application with complex forms, I would generally prefer Reacti
 For smaller forms with minimal logic, Template-driven Forms can reduce the amount of setup required.
 
 Ultimately, I would choose the approach based on the form's complexity, validation requirements, maintainability, and testing needs rather than using one approach for every form.
+
+## Assignment 2
+### Task 1 – Feature-Based Project Structure
+
+#### 1. Overview
+
+The objective of this task was to reorganize the Attribute Management application into a feature-based folder structure while maintaining the existing standalone component-based architecture.
+
+The application is structured into three main areas:
+
+- **Attribute:** Contains components related to attribute management.
+- **Shared:** Contains reusable components, directives, and pipes.
+- **Core:** Contains application-wide services and infrastructure such as HTTP interceptors.
+
+#### 2. Project Structure
+
+The application follows the following folder structure:
+
+```text
+src/
+└── app/
+    ├── core/
+    │   └── services/
+    │       ├── attribute-service.ts
+    │       └── lookup-service.ts
+    │ 
+    │
+    ├── shared/
+    │   ├── components/
+    │   │   └── attribute-card/
+    │   ├── directives/
+    │   │   ├── active-status.directive.ts
+    │   │   └── filter-by.directive.ts
+    │   └── pipes/
+    │       └── relative-time.pipe.ts
+    │
+    ├── features/
+    │   └── attributes/
+    │       ├── components/
+    │       │   ├── attribute-list/
+    │       │   ├── add-attribute/
+    │       │   └── edit-attribute/
+    │       └── attribute.routes.ts
+    │
+    ├── app.routes.ts
+    └── app.config.ts
+```
+
+#### 3. What Goes Where?
+
+##### Attribute Feature
+
+The Attribute feature contains components that implement the application's main business functionality.
+
+It includes:
+
+- **AttributeListPage:** Displays attributes in table and card views, with search and filtering functionality.
+- **AddAttributePage:** Allows users to create new attributes using reactive forms.
+- **EditAttributeComponent:** Allows users to update existing attributes using template-driven forms.
+
+##### Shared
+
+The Shared folder contains reusable functionality that can be used by multiple components or features.
+
+It includes:
+
+- **AttributeCard:** Reusable UI component for displaying attribute information.
+- **AppActiveStatus:** Custom directive that displays active and inactive status.
+- **FilterBy:** Custom structural directive for filtering attributes.
+- **RelativeTimePipe:** Custom pipe for displaying dates in relative time format.
+
+These declarations remain standalone and are imported directly into the components that require them.
+
+##### Core
+
+The Core folder contains application-wide services and infrastructure.
+
+It includes:
+
+- **AttributeService:** Manages attribute data and CRUD operations.
+- **LookupService:** Provides lookup information such as business units, companies, and customer locations.
+- **HTTP Interceptors:** Used for handling common HTTP request and response logic.
+
+Services that should be application-wide singletons use Angular's `providedIn: 'root'` configuration.
+
+#### 4. Why Separate Core from Shared?
+
+Core and Shared have different responsibilities, so separating them improves application organization and maintainability.
+
+| Core | Shared |
+|---|---|
+| Contains application-wide services | Contains reusable UI functionality |
+| Manages application infrastructure | Provides components, directives, and pipes |
+| Includes HTTP interceptors | Includes common UI utilities |
+| Generally initialized at the application root | Used wherever required |
+| Focuses on application-level functionality | Focuses on reusability |
+
+Separating these responsibilities provides the following benefits:
+
+- **Separation of concerns:** Application infrastructure is kept separate from reusable UI functionality.
+- **Maintainability:** Services and shared declarations are easier to locate and manage.
+- **Reusability:** Shared components, directives, and pipes can be reused across features.
+- **Scalability:** New features can be added without unnecessarily increasing the complexity of existing folders.
+
+#### 5. What Happens If CoreModule Is Imported Inside a Lazy-Loaded Module?
+
+In a traditional NgModule-based Angular application, CoreModule is generally imported only once, inside the root AppModule.
+
+If CoreModule is imported inside a lazy-loaded feature module, Angular can create additional instances of providers registered in CoreModule.
+
+This happens because lazy-loaded modules have their own child injectors.
+
+Potential problems include:
+
+- **Duplicate service instances:** Application-wide services may have separate instances.
+- **Multiple interceptor registrations:** HTTP interceptors may be registered more than once.
+- **Inconsistent application state:** Different parts of the application may work with different service instances.
+- **Unexpected behavior:** Duplicate providers can cause issues with shared application data and infrastructure.
+
+To prevent these problems:
+
+1. Import CoreModule only once in the root AppModule.
+2. Avoid importing CoreModule inside lazy-loaded feature modules.
+3. Use `providedIn: 'root'` for application-wide singleton services.
+4. Keep reusable components, directives, and pipes in SharedModule.
+
+**Note:** This section explains the traditional NgModule-based architecture for conceptual understanding. The current Attribute Management application continues to use standalone components and does not implement actual CoreModule or SharedModule classes.
+
+#### 6. Benefits of the Feature-Based Structure
+
+The new folder organization provides several benefits:
+
+- **Better organization:** Related components and services are grouped according to their responsibilities.
+- **Separation of concerns:** Business functionality, shared UI functionality, and application infrastructure are kept separate.
+- **Improved reusability:** Shared components, directives, and pipes can be imported wherever needed.
+- **Lazy loading:** Attribute feature routes can be loaded on demand using Angular's standalone routing configuration.
+- **Easier maintenance:** Changes to one feature are less likely to affect unrelated parts of the application.
+
+#### 7. Conclusion
+
+The Attribute Management application has been reorganized into Attribute, Shared, and Core areas while preserving its standalone component-based architecture.
+
+The Attribute feature contains the main application components, Shared contains reusable UI elements, and Core contains application-wide services and infrastructure.

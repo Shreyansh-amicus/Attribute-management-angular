@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { IAttributeModel } from '../../../models/IAttribute.model';
+import { IAttributeModel } from '../../models/IAttribute.model';
 import { DatePipe } from '@angular/common';
-import { RelativeTimePipe } from '../../../pipes/relative-time-pipe';
-import { AppActiveStatus } from '../../../directives/app-active-status';
+import { RelativeTimePipe } from '../../pipes/relative-time-pipe';
+import { AppActiveStatus } from '../../directives/app-active-status';
 import { RouterLink } from '@angular/router';
 
 @Component({

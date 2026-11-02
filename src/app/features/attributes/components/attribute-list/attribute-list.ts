@@ -1,13 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { AttributeService } from '../../../services/attribute-service';
+
 import { DatePipe } from '@angular/common';
-import { AttributeCard } from '../attribute-card/attribute-card';
-import { AppActiveStatus } from '../../../directives/app-active-status';
-import { RelativeTimePipe } from '../../../pipes/relative-time-pipe';
+import { AttributeCard } from '../../../../shared/components/attribute-card/attribute-card';
+import { AppActiveStatus } from '../../../../shared/directives/app-active-status';
+import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
 import { FormsModule } from '@angular/forms';
-import { FilterBy } from '../../../directives/filter-by';
-import { IAttributeModel } from '../../../models/IAttribute.model';
+import { FilterBy } from '../../../../shared/directives/filter-by';
+import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
 import { RouterLink } from '@angular/router';
+import { AttributeService } from '../../../../core/services/attribute-service';
 
 @Component({
   imports: [DatePipe, AttributeCard, AppActiveStatus, RelativeTimePipe, FormsModule, FilterBy, RouterLink],

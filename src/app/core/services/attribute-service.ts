@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { IAttributeModel } from '../models/IAttribute.model';
-import { IBusinessUnit } from '../models/IBusinessUnit.model';
-import { ICompany } from '../models/ICompany.model';
-import { ICustomerLocationLookUp } from '../models/ILookup.model';
+import { IAttributeModel } from '../../shared/models/IAttribute.model';
+import { IBusinessUnit } from '../../shared/models/IBusinessUnit.model';
+import { ICompany } from '../../shared/models/ICompany.model';
+import { ICustomerLocationLookUp } from '../../shared/models/ILookup.model';
+
 
 @Injectable({
   providedIn: 'root',

@@ -1,13 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { AttributeService } from '../../services/attribute-service';
-import { Lookup } from '../../services/lookup';
-import { IAttributeModel } from '../../models/IAttribute.model';
-import { IBusinessUnit } from '../../models/IBusinessUnit.model';
-import { ICompany } from '../../models/ICompany.model';
-import { ICustomerLocationLookUp } from '../../models/ILookup.model';
+import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
+import { IBusinessUnit } from '../../../../shared/models/IBusinessUnit.model';
+import { ICompany } from '../../../../shared/models/ICompany.model';
+import { ICustomerLocationLookUp } from '../../../../shared/models/ILookup.model';
+import { AttributeService } from '../../../../core/services/attribute-service';
+import { Lookup } from '../../../../core/services/lookup';
 
 @Component({
   selector: 'app-edit-attribute',

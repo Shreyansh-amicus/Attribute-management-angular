@@ -1,5 +1,5 @@
 import { CanDeactivateFn } from '@angular/router';
-import { EditAttribute } from '../pages/edit-attribute/edit-attribute';
+import { EditAttribute } from '../../features/attributes/components/edit-attribute/edit-attribute';
 
 export const unsavedChangesGuard: CanDeactivateFn<
   EditAttribute

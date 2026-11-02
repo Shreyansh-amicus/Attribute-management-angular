@@ -1,14 +1,14 @@
 import { Component, DestroyRef, inject } from '@angular/core';
-import { Lookup } from '../../services/lookup';
-import { IBusinessUnit } from '../../models/IBusinessUnit.model';
-import { ICompany } from '../../models/ICompany.model';
-import { ICustomerLocationLookUp } from '../../models/ILookup.model';
+import { IBusinessUnit } from '../../../../shared/models/IBusinessUnit.model';
+import { ICompany } from '../../../../shared/models/ICompany.model';
+import { ICustomerLocationLookUp } from '../../../../shared/models/ILookup.model';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { attributeNameValidator } from '../../validator/attribute-name.validator';
+import { attributeNameValidator } from '../../../../shared/validator/attribute-name.validator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AttributeService } from '../../services/attribute-service';
-import { IAttributeModel } from '../../models/IAttribute.model';
+import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
 import { Router, RouterLink } from '@angular/router';
+import { AttributeService } from '../../../../core/services/attribute-service';
+import { Lookup } from '../../../../core/services/lookup';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],
