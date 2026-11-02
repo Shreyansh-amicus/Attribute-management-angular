@@ -412,3 +412,114 @@ Application routing was successfully configured for Attribute List, Add Attribut
 Lazy loading was implemented using standalone route configuration with `loadChildren`.
 
 The implementation maintains the existing component-based architecture while improving feature organization and avoiding unnecessary loading of feature code during application startup.
+
+### Task 3 – Authentication Guard (CanActivate)
+
+#### 1. Overview
+
+The objective of this task was to implement route protection using Angular's functional `CanActivate` guard.
+
+A simple authentication mechanism was created using an `AuthService` with a hardcoded login status flag.
+
+No backend or actual credential verification is involved. The purpose is to understand how Angular route guards control navigation based on authentication status.
+
+#### 2. AuthService Implementation
+
+An `AuthService` was created to manage the authentication state of the application.
+
+It maintains an `isLoggedIn` flag using an Angular Signal.
+
+The service provides the following methods:
+
+- **isLoggedIn():** Returns the current authentication status.
+- **login():** Sets the authentication status to `true`.
+- **logout():** Sets the authentication status to `false`.
+
+The service uses `providedIn: 'root'` to ensure that the same service instance is available throughout the application.
+
+#### 3. AuthGuard Implementation
+
+A functional `CanActivate` guard was implemented to protect routes that require authentication.
+
+The guard performs the following operations:
+
+1. Injects AuthService and Angular Router.
+2. Checks whether the user is logged in.
+3. If the user is authenticated, it returns `true` and allows navigation.
+4. If the user is not authenticated, it redirects them to the Login page.
+5. The originally requested URL is passed as a `returnUrl` query parameter.
+
+For example, if an unauthenticated user tries to access `/attributes/101/edit`, they are redirected to:
+
+`/login?returnUrl=%2Fattributes%2F101%2Fedit`
+
+After successful login, the application redirects them to their originally requested page.
+
+#### 4. LoginComponent Implementation
+
+A standalone LoginComponent was created with a simple username and password form.
+
+The form uses Angular's template-driven forms through `FormsModule`.
+
+The login process works as follows:
+
+1. The user enters a username and password.
+2. Required-field validation ensures both fields are provided.
+3. When the Login button is clicked, the `login()` method of AuthService is called.
+4. The authentication flag is updated to `true`.
+5. The application reads the `returnUrl` query parameter.
+6. The user is redirected to the requested page, or to `/attributes` if no valid return URL is available.
+
+**Note:** This is a demonstration-only login mechanism. Any non-empty username and password are accepted. No real authentication or backend validation is performed.
+
+#### 5. Route Protection
+
+The AuthGuard was applied to the Add Attribute and Edit Attribute routes using `canActivate`.
+
+| Route | Authentication Required |
+|---|---|
+| `/attributes` | No |
+| `/attributes/add` | Yes |
+| `/attributes/:id/edit` | Yes |
+| `/dashboard` | No |
+| `/login` | No |
+
+The Attribute List and Dashboard remain publicly accessible, while Add and Edit operations require authentication.
+
+The existing `CanDeactivate` guard on the Edit Attribute route was also retained to prevent users from accidentally leaving with unsaved changes.
+
+#### 6. Testing and Verification
+
+The following scenarios were tested:
+
+| Test Scenario | Expected Result |
+|---|---|
+| Access `/attributes/add` without login | Redirect to Login |
+| Access `/attributes/101/edit` without login | Redirect to Login |
+| Submit login form with non-empty values | Authentication flag becomes `true` |
+| Login after requesting Add Attribute | Redirect to `/attributes/add` |
+| Login after requesting Edit Attribute | Redirect to the requested Edit URL |
+| Access `/attributes` without login | Access allowed |
+| Access `/dashboard` without login | Access allowed |
+
+#### 7. Limitations
+
+Since this task uses a hardcoded authentication flag:
+
+- No backend authentication is implemented.
+- Username and password are not verified against a database.
+- Authentication state is maintained only in memory.
+- Refreshing the browser resets the login status to `false`.
+- The route guard provides client-side navigation control, not production-level security.
+
+In a real-world application, authentication and authorization must also be enforced by the backend.
+
+#### 8. Conclusion
+
+A functional Angular AuthGuard was successfully implemented using `CanActivate`.
+
+The AuthService manages the login state, and the LoginComponent provides a simple interface for changing that state.
+
+The Add Attribute and Edit Attribute routes are now protected, while public routes remain accessible without authentication.
+
+This task demonstrates how Angular route guards can be used to control navigation based on authentication status.
