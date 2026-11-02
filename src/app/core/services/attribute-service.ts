@@ -4,7 +4,6 @@ import { IBusinessUnit } from '../../shared/models/IBusinessUnit.model';
 import { ICompany } from '../../shared/models/ICompany.model';
 import { ICustomerLocationLookUp } from '../../shared/models/ILookup.model';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -165,5 +164,9 @@ export class AttributeService {
     );
 
     return true;
+  }
+
+  getAttributeById(id: number): IAttributeModel | undefined {
+    return this.mockAttributes.find((attribute) => attribute.AttributeId === id);
   }
 }

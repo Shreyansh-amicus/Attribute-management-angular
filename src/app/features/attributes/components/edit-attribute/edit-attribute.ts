@@ -46,22 +46,15 @@ export class EditAttribute implements OnInit {
   }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-
-    this.originalAttribute = this.attributeService.mockAttributes.find(
-      (attribute) => attribute.AttributeId === id,
-    );
-
-    if (!this.originalAttribute) {
-      void this.router.navigate(['/']);
-      return;
-    }
+    // Get the attribute fetched by the resolver.
+    this.originalAttribute = this.route.snapshot.data['attribute'] as IAttributeModel;
 
     const attribute = this.originalAttribute;
 
     // Convert the stored names back to dropdown IDs.
     this.form = {
       AttributeName: attribute.AttributeName,
+
       BusinessUnitId:
         this.businessUnits.find((unit) => unit.BusinessUnitName === attribute.BusinessUnitName)
           ?.BusinessUnitId ?? null,
@@ -143,20 +136,18 @@ export class EditAttribute implements OnInit {
 
   saved = false;
 
-canDeactivate(): boolean {
-  // If changes have already been saved, allow navigation.
-  if (this.saved) {
-    return true;
-  }
+  canDeactivate(): boolean {
+    // If changes have already been saved, allow navigation.
+    if (this.saved) {
+      return true;
+    }
 
-  // If the form is not dirty, there are no unsaved changes.
-  if (!this.editForm?.dirty) {
-    return true;
-  }
+    // If the form is not dirty, there are no unsaved changes.
+    if (!this.editForm?.dirty) {
+      return true;
+    }
 
-  // Ask for confirmation before leaving.
-  return confirm(
-    'You have unsaved changes. Do you want to leave this page?',
-  );
-}
+    // Ask for confirmation before leaving.
+    return confirm('You have unsaved changes. Do you want to leave this page?');
+  }
 }
