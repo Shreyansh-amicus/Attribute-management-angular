@@ -1,21 +1,34 @@
 import { inject, Injectable, Service } from '@angular/core';
-import { AttributeService } from './attribute-service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { IBusinessUnit } from '../../shared/models/IBusinessUnit.model';
+import { Observable } from 'rxjs';
+import { ICompany } from '../../shared/models/ICompany.model';
+import { ICustomerLocationLookUp } from '../../shared/models/ILookup.model';
 
 @Injectable({
     providedIn : "root"
 })
 export class Lookup {
-    private readonly attributeService = inject(AttributeService);
+    private readonly http = inject(HttpClient);
 
-    getBusinessUnits(){
-        return this.attributeService.businessUnits;
-    }
+  private readonly apiUrl = environment.apiUrl;
 
-    getCompanies(){
-        return this.attributeService.companies;
-    }
+  getBusinessUnits(): Observable<IBusinessUnit[]> {
+    return this.http.get<IBusinessUnit[]>(
+      `${this.apiUrl}/businessUnits`,
+    );
+  }
 
-    getCustomerLocation(){
-        return this.attributeService.customerLocations
-    }
+  getCompanies(): Observable<ICompany[]> {
+    return this.http.get<ICompany[]>(
+      `${this.apiUrl}/companies`,
+    );
+  }
+
+  getCustomerLocation(): Observable<ICustomerLocationLookUp[]> {
+    return this.http.get<ICustomerLocationLookUp[]>(
+      `${this.apiUrl}/customerLocation`,
+    );
+  }
 }

@@ -1,0 +1,110 @@
+{
+  "attributes": [
+    {
+      "AttributeId": 101,
+      "AttributeName": "Cost Center Code",
+      "BusinessUnitName": "Finance",
+      "CompanyName": "Acme Corp",
+      "CustomerLocationName": "New York, USA",
+      "IsActive": true,
+      "CreatedOn": "2025-01-15T08:30:00.000Z",
+      "CreatedBy": "Sarah Jenkins",
+      "UpdatedOn": "2025-06-20T10:15:00.000Z",
+      "UpdatedBy": "System Admin"
+    },
+    {
+      "AttributeId": 102,
+      "AttributeName": "Employee Onboarding Status",
+      "BusinessUnitName": "Human Resources",
+      "CompanyName": "Globex Industries",
+      "IsActive": true,
+      "CreatedOn": "2025-03-22T14:15:00.000Z",
+      "CreatedBy": "David Chen"
+    },
+    {
+      "AttributeId": 103,
+      "AttributeName": "Legacy Machine ID",
+      "BusinessUnitName": "Operations",
+      "CustomerLocationName": "Berlin, Germany",
+      "IsActive": false,
+      "CreatedOn": "2024-11-05T09:00:00.000Z",
+      "CreatedBy": "Elena Rostova"
+    },
+    {
+      "AttributeId": 104,
+      "AttributeName": "Campaign ROI Threshold",
+      "BusinessUnitName": "Marketing",
+      "IsActive": true,
+      "CreatedOn": "2025-06-18T11:45:00.000Z",
+      "CreatedBy": "Kenji Sato",
+      "UpdatedOn": "2025-07-02T15:30:00.000Z",
+      "UpdatedBy": "Kenji Sato"
+    },
+    {
+      "AttributeId": 105,
+      "AttributeName": "Warehouse Fleet Capacity",
+      "BusinessUnitName": "Supply Chain",
+      "CompanyName": "",
+      "CustomerLocationName": "Sydney, Australia",
+      "IsActive": true,
+      "CreatedOn": "2025-08-01T16:20:00.000Z",
+      "CreatedBy": "Marcus Vance"
+    },
+    {
+      "AttributeId": 106,
+      "AttributeName": "Deprecated Tax Bracket",
+      "BusinessUnitName": "Finance",
+      "CompanyName": "Globex Industries",
+      "CustomerLocationName": "",
+      "IsActive": false,
+      "CreatedOn": "2024-05-12T07:10:00.000Z",
+      "CreatedBy": "Sarah Jenkins"
+    },
+    {
+      "AttributeId": 107,
+      "AttributeName": "Remote Work Eligibility",
+      "BusinessUnitName": "Human Resources",
+      "CompanyName": "",
+      "CustomerLocationName": "",
+      "IsActive": true,
+      "CreatedOn": "2025-09-10T10:05:00.000Z",
+      "CreatedBy": "Amara Okafor",
+      "UpdatedOn": "2025-12-01T09:00:00.000Z",
+      "UpdatedBy": "David Chen"
+    },
+    {
+      "AttributeId": 108,
+      "AttributeName": "Archived Vendor Tier",
+      "BusinessUnitName": "Supply Chain",
+      "CompanyName": "Initech Software",
+      "CustomerLocationName": "Berlin, Germany",
+      "IsActive": false,
+      "CreatedOn": "2024-08-30T13:50:00.000Z",
+      "CreatedBy": "David Chen"
+    }
+  ],
+  "businessUnits": [
+    { "BusinessUnitId": 1, "BusinessUnitName": "Finance" },
+    { "BusinessUnitId": 2, "BusinessUnitName": "Human Resources" },
+    { "BusinessUnitId": 3, "BusinessUnitName": "Operations" },
+    { "BusinessUnitId": 4, "BusinessUnitName": "Marketing" },
+    { "BusinessUnitId": 5, "BusinessUnitName": "Supply Chain" }
+  ],
+  "companies": [
+    { "CompanyId": 1, "CompanyName": "Acme Corp" },
+    { "CompanyId": 2, "CompanyName": "Globex Industries" },
+    { "CompanyId": 3, "CompanyName": "Initech Software" }
+  ],
+  "customerLocation": [
+    { "CustomerLocationId": 1, "CustomerLocationName": "New York, USA", "BusinessUnitId": 1 },
+    { "CustomerLocationId": 2, "CustomerLocationName": "Mumbai, India", "BusinessUnitId": 1 },
+    { "CustomerLocationId": 3, "CustomerLocationName": "Berlin, Germany", "BusinessUnitId": 2 },
+    { "CustomerLocationId": 4, "CustomerLocationName": "London, UK", "BusinessUnitId": 2 },
+    { "CustomerLocationId": 5, "CustomerLocationName": "Bengaluru, India", "BusinessUnitId": 3 },
+    { "CustomerLocationId": 6, "CustomerLocationName": "Chennai, India", "BusinessUnitId": 3 },
+    { "CustomerLocationId": 7, "CustomerLocationName": "Sydney, Australia", "BusinessUnitId": 4 },
+    { "CustomerLocationId": 8, "CustomerLocationName": "Singapore", "BusinessUnitId": 4 },
+    { "CustomerLocationId": 9, "CustomerLocationName": "Pune, India", "BusinessUnitId": 5 },
+    { "CustomerLocationId": 10, "CustomerLocationName": "Hyderabad, India", "BusinessUnitId": 5 }
+  ]
+}
