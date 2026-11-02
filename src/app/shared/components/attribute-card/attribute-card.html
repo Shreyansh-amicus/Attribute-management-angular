@@ -91,7 +91,7 @@
     <!-- Edit Action -->
     <div class="mt-4 flex justify-end">
       <a
-        [routerLink]="['/edit-attribute', attribute.AttributeId]"
+        [routerLink]="['/attributes', attribute.AttributeId, 'edit']"
         [attr.aria-label]="'Edit ' + attribute.AttributeName"
         class="inline-flex bg-blue-100 cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
       >

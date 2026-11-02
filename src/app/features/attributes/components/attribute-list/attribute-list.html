@@ -16,7 +16,7 @@
     <div class="flex flex-wrap items-center gap-3">
       <!-- Add Attribute Button -->
       <a
-        routerLink="/add-attribute"
+        routerLink="/attributes/add"
         class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
       >
         <span class="text-lg leading-none" aria-hidden="true">+</span>
@@ -218,7 +218,7 @@
                 <!-- Edit Action -->
                 <td class="whitespace-nowrap px-6 py-4 text-right">
                   <a
-                    [routerLink]="['/edit-attribute', attr.AttributeId]"
+                    [routerLink]="['/attributes',attr.AttributeId,'edit']"
                     [attr.aria-label]="'Edit ' + attr.AttributeName"
                     class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                   >

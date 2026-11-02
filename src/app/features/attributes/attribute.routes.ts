@@ -5,17 +5,21 @@ import { EditAttribute } from './components/edit-attribute/edit-attribute';
 import { AttributeList } from './components/attribute-list/attribute-list';
 
 export const ATTRIBUTE_ROUTES: Routes = [
-  {
+   {
     path: '',
-    component: AttributeList
+    component: AttributeList,
+    pathMatch: 'full',
+    title: 'Attribute List'
   },
   {
-    path: 'add-attribute',
-    component: AddAttributePage
+    path: 'add',
+    component: AddAttributePage,
+    title: 'Add Attribute'
   },
   {
-    path: 'edit-attribute/:id',
+    path: ':id/edit',
     component: EditAttribute,
-    canDeactivate: [unsavedChangesGuard]
+    canDeactivate: [unsavedChangesGuard],
+    title: 'Edit Attribute'
   }
 ];

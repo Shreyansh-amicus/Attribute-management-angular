@@ -333,3 +333,82 @@ The new folder organization provides several benefits:
 The Attribute Management application has been reorganized into Attribute, Shared, and Core areas while preserving its standalone component-based architecture.
 
 The Attribute feature contains the main application components, Shared contains reusable UI elements, and Core contains application-wide services and infrastructure.
+
+### Task 2 – Routing and Lazy Loading
+
+#### 1. Overview
+
+The objective of this task was to configure application routing for the Attribute Management application and implement lazy loading for the Attribute feature.
+
+The application uses Angular's standalone component-based routing architecture.
+
+The following routes were implemented:
+
+| Route | Component | Description |
+|---|---|---|
+| `/attributes` | AttributeListPage | Displays the list of attributes |
+| `/attributes/add` | AddAttributePage | Allows users to add attributes |
+| `/attributes/:id/edit` | EditAttributeComponent | Allows users to edit an existing attribute |
+| `/dashboard` | DashboardComponent | Displays a dashboard placeholder |
+| `**` | PageNotFoundComponent | Handles unknown routes |
+
+The root URL (`/`) redirects to `/attributes` by default.
+
+#### 2. Lazy Loading Implementation
+
+Lazy loading was implemented using Angular's `loadChildren` routing configuration.
+
+Instead of loading all Attribute components when the application starts, Angular loads the Attribute feature's route configuration only when the user navigates to `/attributes`.
+
+The feature routes are maintained separately in `attribute.routes.ts`.
+
+This keeps the root routing configuration clean and separates feature-specific routing from application-level routing.
+
+Since the application follows a standalone architecture, the implementation uses lazy-loaded route configurations rather than an actual AttributeModule NgModule.
+
+#### 3. Why Use Lazy Loading?
+
+Lazy loading improves application performance by avoiding the need to load every feature when the application initially starts.
+
+Benefits include:
+
+- **Reduced initial loading:** Feature code is downloaded only when required.
+- **Better performance:** Smaller initial JavaScript payloads can improve application startup.
+- **Code separation:** Feature-specific routes and components remain organized separately.
+- **Scalability:** Additional features can be lazy-loaded independently.
+
+#### 4. How Was Lazy Loading Verified?
+
+Lazy loading was verified using the browser's Developer Tools Network tab.
+
+The following steps were performed:
+
+1. Started the Angular application using `ng serve`.
+2. Opened the browser Developer Tools.
+3. Navigated to `/anything` first to load page-not-found page.
+4. Navigated to `/attributes`.
+5. Observed a new JavaScript chunk request in the Network tab.
+
+**Observation:**
+
+When navigating to `/anything`, the Attribute feature was not required.
+
+When navigating to `/attributes`, Angular dynamically loaded the Attribute feature's route configuration and its required dependencies through a separate JavaScript chunk.
+
+This confirms that the Attribute feature is configured for lazy loading.
+
+**Screenshot Evidence:**
+
+- Initial load(page not found)
+![Initial load](screenshots/attribute%20components%20doesn't%20get%20loaded%20on%20page%20not%20found%20page.png)
+
+- Lazy load(/attributes)
+![Lazy load](screenshots/attribute%20components%20get%20loaded%20only%20on%20the%20attributes%20route.png)
+
+#### 5. Conclusion
+
+Application routing was successfully configured for Attribute List, Add Attribute, Edit Attribute, Dashboard, and Page Not Found.
+
+Lazy loading was implemented using standalone route configuration with `loadChildren`.
+
+The implementation maintains the existing component-based architecture while improving feature organization and avoiding unnecessary loading of feature code during application startup.
