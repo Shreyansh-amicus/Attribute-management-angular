@@ -1,12 +1,13 @@
 
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SelectedAttributeService {
-  private readonly selectedAttributeSubject = new Subject<string>();
+export class SelectedAttributeService { 
+  private readonly selectedAttributeSubject =
+    new BehaviorSubject<string | null>(null);
 
   readonly selectedAttribute$ =
     this.selectedAttributeSubject.asObservable();
