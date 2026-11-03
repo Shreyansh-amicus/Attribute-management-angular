@@ -5,6 +5,7 @@ import { EditAttribute } from './components/edit-attribute/edit-attribute';
 import { AttributeList } from './components/attribute-list/attribute-list';
 import { authGuard } from '../../core/guards/auth.guard';
 import { attributeResolver } from '../../core/resolvers/attribute-resolver';
+import { SubjectDemo } from './components/subject-demo/subject-demo';
 
 export const ATTRIBUTE_ROUTES: Routes = [
    {
@@ -27,6 +28,11 @@ export const ATTRIBUTE_ROUTES: Routes = [
     canActivate : [authGuard],
     resolve:{
       attribute : attributeResolver
-    },
+    }
+  },
+  {
+    path : 'bug-test',
+    component : SubjectDemo,
+    title : 'Bug Test'
   }
 ];
