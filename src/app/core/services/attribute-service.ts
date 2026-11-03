@@ -73,4 +73,16 @@ export class AttributeService {
   deleteAttribute(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  searchAttributes(searchTerm: string): Observable<IAttributeModel[]> {
+  return this.http
+    .get<AttributeDTO[]>(this.apiUrl, {
+      params: {
+        q: searchTerm,
+      },
+    })
+    .pipe(
+      map(dtos => dtos.map(dto => this.mapper.toAttribute(dto)))
+    );
+}
 }

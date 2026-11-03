@@ -1,9 +1,14 @@
+
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
   <!-- Page Header -->
   <div class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
     <div>
-      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Attribute list</h2>
-      <p class="mt-2 text-sm text-gray-500">View and explore your available attributes.</p>
+      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        Attribute list
+      </h2>
+      <p class="mt-2 text-sm text-gray-500">
+        View and explore your available attributes.
+      </p>
     </div>
 
     <!-- Actions -->
@@ -51,7 +56,10 @@
 
   <!-- Search Box -->
   <div class="mb-6">
-    <label for="attributeSearch" class="mb-2 block text-sm font-semibold text-gray-700">
+    <label
+      for="attributeSearch"
+      class="mb-2 block text-sm font-semibold text-gray-700"
+    >
       Search attributes
     </label>
 
@@ -59,27 +67,39 @@
       <input
         id="attributeSearch"
         type="search"
-        [(ngModel)]="searchTerm"
+        [formControl]="searchControl"
         placeholder="Search by attribute name or business unit..."
         class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
       />
     </div>
 
     <p class="mt-2 text-xs text-gray-500">
-      Search matches attribute names and business unit names.
+      Search matches attributes returned by the API.
     </p>
+
+    <!-- Searching Indicator -->
+    @if (isSearching) {
+      <p class="mt-2 text-sm font-medium text-blue-600" role="status">
+        Searching...
+      </p>
+    }
   </div>
 
-  <!-- API Loading State -->
+  <!-- Initial API Loading State -->
   @if (isLoading) {
     <div class="rounded-xl border border-gray-200 bg-white p-8 text-center">
-      <p class="text-sm font-medium text-gray-600">Loading attributes...</p>
+      <p class="text-sm font-medium text-gray-600">
+        Loading attributes...
+      </p>
     </div>
   }
 
   <!-- API Error State -->
   @else if (errorMessage) {
-    <div class="rounded-xl border border-red-200 bg-red-50 p-8 text-center" role="alert">
+    <div
+      class="rounded-xl border border-red-200 bg-red-50 p-8 text-center"
+      role="alert"
+    >
       <p class="font-semibold text-red-700">
         {{ errorMessage }}
       </p>
@@ -87,12 +107,15 @@
   }
 
   <!-- Empty State -->
-  @else if (attributes.length === 0) {
+  @else if (attributes.length === 0 && !isSearching) {
     <div class="rounded-xl border border-gray-200 bg-white p-8 text-center">
-      <p class="text-sm text-gray-500">No attributes available.</p>
+      <p class="text-sm text-gray-500">
+        No attributes found.
+      </p>
     </div>
+  }
 
-  } @else {
+  @else {
     <!-- Table View -->
     @if (isTableView) {
       <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -101,60 +124,35 @@
             <!-- Table Header -->
             <thead class="bg-gray-50">
               <tr>
-                <th
-                  scope="col"
-                  class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                   ID
                 </th>
 
-                <th
-                  scope="col"
-                  class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Name
                 </th>
 
-                <th
-                  scope="col"
-                  class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Business Unit
                 </th>
 
-                <th
-                  scope="col"
-                  class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Company
                 </th>
 
-                <th
-                  scope="col"
-                  class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Customer Location
                 </th>
 
-                <th
-                  scope="col"
-                  class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Status
                 </th>
 
-                <th
-                  scope="col"
-                  class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Created On
                 </th>
 
-                <!-- New Actions Column -->
-                <th
-                  scope="col"
-                  class="whitespace-nowrap px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500"
-                >
+                <th scope="col" class="whitespace-nowrap px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Actions
                 </th>
               </tr>
@@ -163,15 +161,10 @@
             <!-- Table Body -->
             <tbody class="divide-y divide-gray-100 text-gray-600">
               @for (attr of attributes; track attr.AttributeId) {
-                <tr
-                  *appFilterBy="attr; searchTerm: searchTerm"
-                  class="transition-colors duration-150 hover:bg-blue-50/40"
-                >
+                <tr class="transition-colors duration-150 hover:bg-blue-50/40">
                   <!-- ID -->
                   <td class="whitespace-nowrap px-6 py-4">
-                    <span
-                      class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs font-medium text-gray-500"
-                    >
+                    <span class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs font-medium text-gray-500">
                       #{{ attr.AttributeId }}
                     </span>
                   </td>
@@ -230,7 +223,6 @@
                       [attr.aria-label]="'Edit ' + attr.AttributeName"
                       class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
                     >
-                      <!--  -->
                       Edit
                     </a>
                   </td>
@@ -240,11 +232,13 @@
           </table>
         </div>
       </div>
-    } @else {
-      <!-- Card View -->
+    }
+
+    <!-- Card View -->
+    @else {
       <div class="grid grid-cols-1 items-stretch gap-5 py-2 sm:grid-cols-2 xl:grid-cols-3">
         @for (attr of attributes; track attr.AttributeId) {
-          <app-attribute-card *appFilterBy="attr; searchTerm: searchTerm" [attribute]="attr" />
+          <app-attribute-card [attribute]="attr" />
         }
       </div>
     }

@@ -1,13 +1,24 @@
-import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+
+import { Component, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import {
+  debounceTime,
+  distinctUntilChanged,
+  startWith,
+  map,
+  tap,
+  switchMap,
+  catchError,
+  of,
+} from 'rxjs';
 
 import { AttributeCard } from '../../../../shared/components/attribute-card/attribute-card';
 import { AppActiveStatus } from '../../../../shared/directives/app-active-status';
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
-import { FilterBy } from '../../../../shared/directives/filter-by';
 import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
 import { AttributeService } from '../../../../core/services/attribute-service';
 
@@ -15,62 +26,105 @@ import { AttributeService } from '../../../../core/services/attribute-service';
   selector: 'app-attribute-list',
   standalone: true,
   imports: [
-    DatePipe,
-    FormsModule,
+    ReactiveFormsModule,
     RouterLink,
     AttributeCard,
     AppActiveStatus,
     RelativeTimePipe,
-    FilterBy,
   ],
   styleUrl: './attribute-list.css',
   templateUrl: './attribute-list.html',
 })
-export class AttributeList implements OnInit {
+export class AttributeList {
   private readonly attributeService = inject(AttributeService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);
 
   attributes: IAttributeModel[] = [];
 
-  searchTerm = '';
-  isTableView = true;
+  searchControl = new FormControl('', {
+    nonNullable: true,
+  });
 
-  isLoading = false;
+  isTableView = true;
+  isLoading = true;
+  isSearching = false;
   errorMessage = '';
+
+  private hasLoaded = false;
+
+  constructor() {
+    this.searchControl.valueChanges
+      .pipe(
+        // Load all attributes when the component is first created.
+        startWith(this.searchControl.value),
+
+        // Remove unnecessary whitespace.
+        map((searchTerm) => searchTerm.trim()),
+
+        // Ignore consecutive duplicate search terms.
+        distinctUntilChanged(),
+
+        // Show the indicator immediately, before the debounce period.
+        tap(() => {
+          this.errorMessage = '';
+
+          if (this.hasLoaded) {
+            this.isSearching = true;
+          } else {
+            this.isLoading = true;
+          }
+
+          this.cdr.markForCheck();
+        }),
+
+        // Wait until the user stops typing for 300 milliseconds.
+        debounceTime(300),
+
+        // Switch to the latest search request.
+        switchMap((searchTerm) => {
+          const request$ = searchTerm
+            ? this.attributeService.searchAttributes(searchTerm)
+            : this.attributeService.getAttributes();
+
+          return request$.pipe(
+            tap((attributes) => {
+              this.attributes = attributes;
+              this.hasLoaded = true;
+              this.isLoading = false;
+              this.isSearching = false;
+
+              console.log('Attributes received from API:', attributes);
+
+              this.cdr.markForCheck();
+            }),
+
+            // Handle errors without terminating valueChanges.
+            catchError((error) => {
+              console.error('Failed to fetch attributes:', error);
+
+              this.errorMessage =
+                'Unable to load attributes. Please try again later.';
+
+              this.attributes = [];
+              this.hasLoaded = true;
+              this.isLoading = false;
+              this.isSearching = false;
+
+              this.cdr.markForCheck();
+
+              return of([]);
+            })
+          );
+        }),
+
+        // Automatically unsubscribe when this component is destroyed.
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
+  }
 
   onClick(): void {
     this.isTableView = !this.isTableView;
-  }
-
-  ngOnInit(): void {
-    this.loadAttributes();
-  }
-
-  private loadAttributes(): void {
-    this.isLoading = true;
-    this.errorMessage = '';
-
-    this.attributeService
-      .getAttributes()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (attributes) => {
-          this.attributes = attributes;
-          this.isLoading = false;
-
-          console.log('Attributes received from API:', this.attributes);
-          this.cdr.markForCheck();
-        },
-        error: (error) => {
-          console.error('Failed to fetch attributes:', error);
-
-          this.errorMessage =
-            'Unable to load attributes. Please try again later.';
-
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        },
-      });
   }
 }
