@@ -14,6 +14,7 @@ import {
   switchMap,
   catchError,
   of,
+  interval,
 } from 'rxjs';
 
 import { AttributeCard } from '../../../../shared/components/attribute-card/attribute-card';
@@ -52,6 +53,14 @@ export class AttributeList {
   errorMessage = '';
 
   private hasLoaded = false;
+
+  ngOnInit(): void {
+    interval(2000).subscribe((count) => {
+      console.log(
+        `AttributeList instance is still running: ${count}`
+      );
+    });
+  }
 
   constructor() {
     this.searchControl.valueChanges
