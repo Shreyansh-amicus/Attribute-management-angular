@@ -243,7 +243,7 @@
                         appActiveStatus
                         [isActive]="attr.IsActive"
                         [createdOn]="attr.CreatedOn"
-                        [updatedOn]="attr.UpdatedOn"
+                        [updatedOn]="attr.UpdatedOn ?? null"
                       >
                         {{ attr.IsActive ? 'Active' : 'Inactive' }}
                       </span>

@@ -1,0 +1,22 @@
+@if (isLoading$ | async) {
+  <div
+    class="fixed inset-0 z-9999 flex items-center justify-center bg-black/30 backdrop-blur-sm"
+    role="status"
+    aria-live="polite"
+    aria-label="Loading"
+  >
+    <div class="flex flex-col items-center gap-4 rounded-xl bg-white px-10 py-8 shadow-2xl">
+      <!-- Spinner -->
+      <div
+        class="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"
+      ></div>
+
+      <!-- Loading text -->
+      <div class="text-center">
+        <p class="text-base font-semibold text-gray-800">Loading, please wait...</p>
+
+        <p class="mt-1 text-sm text-gray-500">Fetching your data</p>
+      </div>
+    </div>
+  </div>
+}

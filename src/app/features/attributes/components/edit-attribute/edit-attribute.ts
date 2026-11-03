@@ -1,13 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 
-import {
-  ChangeDetectorRef,
-  Component,
-  DestroyRef,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,6 +15,7 @@ import { ICustomerLocationLookUp } from '../../../../shared/models/ILookup.model
 import { AttributeService } from '../../../../core/services/attribute-service';
 import { Lookup } from '../../../../core/services/lookup';
 import { StoreService } from '../../../../core/services/store';
+import { ToastService } from '../../../../core/services/toast-service';
 
 @Component({
   selector: 'app-edit-attribute',
@@ -37,6 +31,7 @@ export class EditAttribute implements OnInit {
   private readonly attributeService = inject(AttributeService);
   private readonly lookupService = inject(Lookup);
   private readonly store = inject(StoreService);
+  private readonly toastService = inject(ToastService);
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -71,15 +66,19 @@ export class EditAttribute implements OnInit {
 
   ngOnInit(): void {
     // The resolver supplies this attribute before the component loads.
-    this.originalAttribute =
-      this.route.snapshot.data['attribute'] as
-        | IAttributeModel
-        | undefined;
+    this.originalAttribute = this.route.snapshot.data['attribute'] as IAttributeModel | undefined;
 
+    // Handle an invalid or non-existing attribute ID.
     if (!this.originalAttribute) {
       this.isLoading = false;
-      this.errorMessage =
-        'The requested attribute could not be loaded.';
+
+      this.toastService.error(
+        'Attribute not found. You have been redirected to the Attribute List.',
+      );
+
+      void this.router.navigate(['/attributes'], {
+        replaceUrl: true,
+      });
 
       return;
     }
@@ -116,13 +115,9 @@ export class EditAttribute implements OnInit {
         },
 
         error: (error) => {
-          console.error(
-            'Failed to load edit form lookup data:',
-            error,
-          );
+          console.error('Failed to load edit form lookup data:', error);
 
-          this.errorMessage =
-            'Unable to load the form data. Please try again later.';
+          this.errorMessage = 'Unable to load the form data. Please try again later.';
 
           this.isLoading = false;
           this.lookupsLoaded = false;
@@ -143,32 +138,25 @@ export class EditAttribute implements OnInit {
 
     const businessUnitId =
       lookups.businessUnits.find(
-        (unit: IBusinessUnit) =>
-          unit.BusinessUnitName === attribute.BusinessUnitName,
+        (unit: IBusinessUnit) => unit.BusinessUnitName === attribute.BusinessUnitName,
       )?.BusinessUnitId ?? null;
 
     const companyId =
-      lookups.companies.find(
-        (company: ICompany) =>
-          company.CompanyName === attribute.CompanyName,
-      )?.CompanyId ?? null;
+      lookups.companies.find((company: ICompany) => company.CompanyName === attribute.CompanyName)
+        ?.CompanyId ?? null;
 
     // First filter locations using the original Business Unit.
     const locations =
       businessUnitId === null
         ? []
         : lookups.customerLocations.filter(
-            (location: ICustomerLocationLookUp) =>
-              location.BusinessUnitId === businessUnitId,
+            (location: ICustomerLocationLookUp) => location.BusinessUnitId === businessUnitId,
           );
 
     // Find the original location only within that Business Unit.
     const customerLocationId =
-      locations.find(
-        (location) =>
-          location.CustomerLocationName ===
-          attribute.CustomerLocationName,
-      )?.CustomerLocationId ?? null;
+      locations.find((location) => location.CustomerLocationName === attribute.CustomerLocationName)
+        ?.CustomerLocationId ?? null;
 
     this.form = {
       AttributeName: attribute.AttributeName,
@@ -191,16 +179,14 @@ export class EditAttribute implements OnInit {
     // Clear the previously selected location.
     this.form.CustomerLocationId = null;
 
-    const allCustomerLocations =
-      this.store.snapshot.lookups.customerLocations;
+    const allCustomerLocations = this.store.snapshot.lookups.customerLocations;
 
     // Filter locations belonging to the selected Business Unit.
     this.filteredCustomerLocations =
       businessUnitId === null
         ? []
         : allCustomerLocations.filter(
-            (location: ICustomerLocationLookUp) =>
-              location.BusinessUnitId === businessUnitId,
+            (location: ICustomerLocationLookUp) => location.BusinessUnitId === businessUnitId,
           );
 
     this.cdr.markForCheck();
@@ -213,8 +199,7 @@ export class EditAttribute implements OnInit {
     this.errorMessage = '';
 
     if (!this.lookupsLoaded || this.isLoading) {
-      this.errorMessage =
-        'Please wait until the lookup data has loaded.';
+      this.errorMessage = 'Please wait until the lookup data has loaded.';
 
       return;
     }
@@ -228,28 +213,21 @@ export class EditAttribute implements OnInit {
     const lookups = this.store.snapshot.lookups;
 
     const selectedBusinessUnit = lookups.businessUnits.find(
-      (unit: IBusinessUnit) =>
-        unit.BusinessUnitId === this.form.BusinessUnitId,
+      (unit: IBusinessUnit) => unit.BusinessUnitId === this.form.BusinessUnitId,
     );
 
     const selectedCompany = lookups.companies.find(
-      (company: ICompany) =>
-        company.CompanyId === this.form.CompanyId,
+      (company: ICompany) => company.CompanyId === this.form.CompanyId,
     );
 
     const selectedLocation = lookups.customerLocations.find(
       (location: ICustomerLocationLookUp) =>
-        location.CustomerLocationId ===
-          this.form.CustomerLocationId &&
+        location.CustomerLocationId === this.form.CustomerLocationId &&
         location.BusinessUnitId === this.form.BusinessUnitId,
     );
 
     // Validate selected lookup records.
-    if (
-      !selectedBusinessUnit ||
-      !selectedCompany ||
-      !selectedLocation
-    ) {
+    if (!selectedBusinessUnit || !selectedCompany || !selectedLocation) {
       this.errorMessage =
         'Please select valid Business Unit, Company and Customer Location values.';
 
@@ -266,8 +244,7 @@ export class EditAttribute implements OnInit {
 
       CompanyName: selectedCompany.CompanyName,
 
-      CustomerLocationName:
-        selectedLocation.CustomerLocationName,
+      CustomerLocationName: selectedLocation.CustomerLocationName,
 
       IsActive: this.form.IsActive,
 
@@ -279,23 +256,16 @@ export class EditAttribute implements OnInit {
     this.isSaving = true;
 
     this.attributeService
-      .updateAttribute(
-        this.originalAttribute.AttributeId,
-        updatedAttribute,
-      )
+      .updateAttribute(this.originalAttribute.AttributeId, updatedAttribute)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (updated) => {
-          console.log(
-            'Attribute updated and store synchronized:',
-            updated,
-          );
+          console.log('Attribute updated and store synchronized:', updated);
 
           this.isSaving = false;
           this.saved = true;
 
-          this.successMessage =
-            'Attribute updated successfully!';
+          this.successMessage = 'Attribute updated successfully!';
 
           this.cdr.markForCheck();
 
@@ -308,8 +278,7 @@ export class EditAttribute implements OnInit {
 
           this.isSaving = false;
 
-          this.errorMessage =
-            'Unable to update the attribute. Please try again.';
+          this.errorMessage = 'Unable to update the attribute. Please try again.';
 
           this.cdr.markForCheck();
         },
@@ -322,8 +291,6 @@ export class EditAttribute implements OnInit {
       return true;
     }
 
-    return confirm(
-      'You have unsaved changes. Do you want to leave this page?',
-    );
+    return confirm('You have unsaved changes. Do you want to leave this page?');
   }
 }

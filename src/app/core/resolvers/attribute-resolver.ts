@@ -1,9 +1,7 @@
 import { inject } from '@angular/core';
-import {
-  RedirectCommand,
-  ResolveFn,
-  Router,
-} from '@angular/router';
+import { RedirectCommand, ResolveFn, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { catchError, of } from 'rxjs';
 
 import { IAttributeModel } from '../../shared/models/IAttribute.model';
 import { AttributeService } from '../services/attribute-service';
@@ -16,23 +14,25 @@ export const attributeResolver: ResolveFn<IAttributeModel> = (route) => {
 
   const id = Number(route.paramMap.get('id'));
 
-  // Check whether the route ID is valid.
+  // 1. Validate the route ID before making an API request.
   if (!Number.isInteger(id) || id <= 0) {
     toastService.error('Invalid attribute ID.');
+
     return new RedirectCommand(router.createUrlTree(['/attributes']));
   }
 
-  // Fetch the attribute before loading the component.
-  const attribute = attributeService.getAttributeById(id);
+  return attributeService.getAttributeById(id).pipe(
+    catchError((error: HttpErrorResponse) => {
+      console.error('Error loading attribute:', error);
 
-  if (!attribute) {
-    toastService.error(`Attribute with ID ${id} was not found.`);
+      if (error.status === 404) {
+        toastService.error(`Attribute with ID ${id} was not found.`);
+      } else {
+        toastService.error('Unable to load the requested attribute.');
+      }
 
-    return new RedirectCommand(
-      router.createUrlTree(['/attributes']),
-    );
-  }
-
-  // Pass the fetched attribute to the component.
-  return attribute;
+      // 3. Redirect instead of opening the Edit component.
+      return of(new RedirectCommand(router.createUrlTree(['/attributes'])));
+    }),
+  );
 };

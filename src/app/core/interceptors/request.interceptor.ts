@@ -1,7 +1,6 @@
-
 import {
   HttpInterceptorFn,
-  HttpErrorResponse,
+  HttpErrorResponse
 } from '@angular/common/http';
 
 import { inject } from '@angular/core';
@@ -12,22 +11,29 @@ import {
   finalize,
   retry,
   throwError,
-  timer,
+  timer
 } from 'rxjs';
 
 import { ToastService } from '../services/toast-service';
+import { LoadingService } from '../services/loading-service';
 
 export const requestInterceptor: HttpInterceptorFn = (req, next) => {
+
   const router = inject(Router);
   const toastService = inject(ToastService);
+  const loadingService = inject(LoadingService);
 
   const requestId = crypto.randomUUID();
   const startTime = Date.now();
 
+  // Increment the active HTTP request counter.
+  loadingService.requestStarted();
+
+  // Add a unique request ID to every outgoing request.
   const modifiedRequest = req.clone({
     setHeaders: {
-      'X-Request-Id': requestId,
-    },
+      'X-Request-Id': requestId
+    }
   });
 
   console.log(
@@ -36,39 +42,61 @@ export const requestInterceptor: HttpInterceptorFn = (req, next) => {
   );
 
   return next(modifiedRequest).pipe(
-    // Retry GET requests up to 2 times with a 1-second delay
+
+    // Retry only GET requests and only for potentially temporary errors.
     retry({
       count: req.method === 'GET' ? 2 : 0,
+
       delay: (error: HttpErrorResponse, retryCount: number) => {
+
+        const shouldRetry =
+          error.status === 0 ||
+          error.status === 408 ||
+          error.status === 429 ||
+          error.status >= 500;
+
+        // Do not retry permanent errors such as 400, 401 or 404.
+        if (!shouldRetry) {
+          console.warn(
+            `[HTTP Retry Skipped] ${req.urlWithParams}`,
+            `Status: ${error.status}`
+          );
+
+          return throwError(() => error);
+        }
+
         console.warn(
           `[HTTP Retry] Attempt ${retryCount} for ${req.urlWithParams}`,
           error.status
         );
 
         return timer(1000);
-      },
+      }
     }),
 
-    // Handle errors after all retry attempts have failed
     catchError((error: HttpErrorResponse) => {
+
+      // Handle unauthorized requests.
       if (error.status === 401) {
-        console.error('401 Unauthorized: Redirecting to login.');
         void router.navigate(['/login']);
       }
 
+      // Handle internal server errors.
       if (error.status === 500) {
-        console.error('500 Internal Server Error:', error);
-
         toastService.error(
           'Something went wrong on the server. Please try again later.'
         );
       }
 
+      // Pass the error to the calling service/component/resolver.
       return throwError(() => error);
     }),
 
-    // Log the total duration, including retries and delays
     finalize(() => {
+
+      // Decrement the counter after completion, error or cancellation.
+      loadingService.requestFinished();
+
       const duration = Date.now() - startTime;
 
       console.log(
