@@ -1,4 +1,3 @@
-
 import { Component, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -26,13 +25,7 @@ import { AttributeService } from '../../../../core/services/attribute-service';
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    AttributeCard,
-    AppActiveStatus,
-    RelativeTimePipe,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, AttributeCard, AppActiveStatus, RelativeTimePipe],
   styleUrl: './attribute-list.css',
   templateUrl: './attribute-list.html',
 })
@@ -55,11 +48,11 @@ export class AttributeList {
   private hasLoaded = false;
 
   ngOnInit(): void {
-    interval(2000).subscribe((count) => {
-      console.log(
-        `AttributeList instance is still running: ${count}`
-      );
-    });
+    interval(2000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((count) => {
+        console.log(`AttributeList instance is still running: ${count}`);
+      });
   }
 
   constructor() {
@@ -112,8 +105,7 @@ export class AttributeList {
             catchError((error) => {
               console.error('Failed to fetch attributes:', error);
 
-              this.errorMessage =
-                'Unable to load attributes. Please try again later.';
+              this.errorMessage = 'Unable to load attributes. Please try again later.';
 
               this.attributes = [];
               this.hasLoaded = true;
@@ -123,12 +115,12 @@ export class AttributeList {
               this.cdr.markForCheck();
 
               return of([]);
-            })
+            }),
           );
         }),
 
         // Automatically unsubscribe when this component is destroyed.
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }
