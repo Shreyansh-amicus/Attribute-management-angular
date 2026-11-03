@@ -1,110 +1,219 @@
 {
   "attributes": [
     {
-      "AttributeId": 101,
-      "AttributeName": "Cost Center Code",
-      "BusinessUnitName": "Finance",
-      "CompanyName": "Acme Corp",
-      "CustomerLocationName": "New York, USA",
-      "IsActive": true,
-      "CreatedOn": "2025-01-15T08:30:00.000Z",
-      "CreatedBy": "Sarah Jenkins",
-      "UpdatedOn": "2025-06-20T10:15:00.000Z",
-      "UpdatedBy": "System Admin"
+      "attribute_id": 101,
+      "attribute_name": "Cost Center Code",
+      "business_unit_name": "Finance",
+      "company_name": "Acme Corp",
+      "customer_location_name": "New York, USA",
+      "is_active": true,
+      "created_on": "2025-01-15T08:30:00.000Z",
+      "created_by": "Sarah Jenkins",
+      "updated_on": "2025-06-20T10:15:00.000Z",
+      "updated_by": "System Admin"
     },
     {
-      "AttributeId": 102,
-      "AttributeName": "Employee Onboarding Status",
-      "BusinessUnitName": "Human Resources",
-      "CompanyName": "Globex Industries",
-      "IsActive": true,
-      "CreatedOn": "2025-03-22T14:15:00.000Z",
-      "CreatedBy": "David Chen"
+      "attribute_id": 102,
+      "attribute_name": "Employee Onboarding Status",
+      "business_unit_name": "Human Resources",
+      "company_name": "Globex Industries",
+      "is_active": true,
+      "created_on": "2025-03-22T14:15:00.000Z",
+      "created_by": "David Chen"
     },
     {
-      "AttributeId": 103,
-      "AttributeName": "Legacy Machine ID",
-      "BusinessUnitName": "Operations",
-      "CustomerLocationName": "Berlin, Germany",
-      "IsActive": false,
-      "CreatedOn": "2024-11-05T09:00:00.000Z",
-      "CreatedBy": "Elena Rostova"
+      "attribute_id": 103,
+      "attribute_name": "Legacy Machine ID",
+      "business_unit_name": "Operations",
+      "customer_location_name": "Chennai, India",
+      "is_active": true,
+      "company_name": "Acme Corp",
+      "created_on": "2024-11-05T09:00:00.000Z",
+      "created_by": "Elena Rostova",
+      "updated_on": "2026-11-02T15:01:59.669Z",
+      "updated_by": "Admin"
     },
     {
-      "AttributeId": 104,
-      "AttributeName": "Campaign ROI Threshold",
-      "BusinessUnitName": "Marketing",
-      "IsActive": true,
-      "CreatedOn": "2025-06-18T11:45:00.000Z",
-      "CreatedBy": "Kenji Sato",
-      "UpdatedOn": "2025-07-02T15:30:00.000Z",
-      "UpdatedBy": "Kenji Sato"
+      "attribute_id": 104,
+      "attribute_name": "Campaign ROI Threshold",
+      "business_unit_name": "Marketing",
+      "is_active": true,
+      "created_on": "2025-06-18T11:45:00.000Z",
+      "created_by": "Kenji Sato",
+      "updated_on": "2025-07-02T15:30:00.000Z",
+      "updated_by": "Kenji Sato"
     },
     {
-      "AttributeId": 105,
-      "AttributeName": "Warehouse Fleet Capacity",
-      "BusinessUnitName": "Supply Chain",
-      "CompanyName": "",
-      "CustomerLocationName": "Sydney, Australia",
-      "IsActive": true,
-      "CreatedOn": "2025-08-01T16:20:00.000Z",
-      "CreatedBy": "Marcus Vance"
+      "attribute_id": 105,
+      "attribute_name": "Warehouse Fleet Capacity",
+      "business_unit_name": "Supply Chain",
+      "company_name": "",
+      "customer_location_name": "Sydney, Australia",
+      "is_active": true,
+      "created_on": "2025-08-01T16:20:00.000Z",
+      "created_by": "Marcus Vance"
     },
     {
-      "AttributeId": 106,
-      "AttributeName": "Deprecated Tax Bracket",
-      "BusinessUnitName": "Finance",
-      "CompanyName": "Globex Industries",
-      "CustomerLocationName": "",
-      "IsActive": false,
-      "CreatedOn": "2024-05-12T07:10:00.000Z",
-      "CreatedBy": "Sarah Jenkins"
+      "attribute_id": 106,
+      "attribute_name": "Deprecated Tax Bracket",
+      "business_unit_name": "Finance",
+      "company_name": "Globex Industries",
+      "customer_location_name": "",
+      "is_active": false,
+      "created_on": "2024-05-12T07:10:00.000Z",
+      "created_by": "Sarah Jenkins"
     },
     {
-      "AttributeId": 107,
-      "AttributeName": "Remote Work Eligibility",
-      "BusinessUnitName": "Human Resources",
-      "CompanyName": "",
-      "CustomerLocationName": "",
-      "IsActive": true,
-      "CreatedOn": "2025-09-10T10:05:00.000Z",
-      "CreatedBy": "Amara Okafor",
-      "UpdatedOn": "2025-12-01T09:00:00.000Z",
-      "UpdatedBy": "David Chen"
+      "attribute_id": 107,
+      "attribute_name": "Remote Work Eligibility",
+      "business_unit_name": "Human Resources",
+      "company_name": "",
+      "customer_location_name": "",
+      "is_active": true,
+      "created_on": "2025-09-10T10:05:00.000Z",
+      "created_by": "Amara Okafor",
+      "updated_on": "2025-12-01T09:00:00.000Z",
+      "updated_by": "David Chen"
     },
     {
-      "AttributeId": 108,
-      "AttributeName": "Archived Vendor Tier",
-      "BusinessUnitName": "Supply Chain",
-      "CompanyName": "Initech Software",
-      "CustomerLocationName": "Berlin, Germany",
-      "IsActive": false,
-      "CreatedOn": "2024-08-30T13:50:00.000Z",
-      "CreatedBy": "David Chen"
+      "attribute_id": 108,
+      "attribute_name": "Archived Vendor Tier",
+      "business_unit_name": "Supply Chain",
+      "company_name": "Initech Software",
+      "customer_location_name": "Berlin, Germany",
+      "is_active": false,
+      "created_on": "2024-08-30T13:50:00.000Z",
+      "created_by": "David Chen"
+    },
+    {
+      "attribute_id": 109,
+      "attribute_name": "Employee Onboarding Status test",
+      "business_unit_name": "Human Resources",
+      "company_name": "Initech Software",
+      "customer_location_name": "Berlin, Germany",
+      "is_active": true,
+      "created_on": "2026-11-02T14:39:12.007Z",
+      "created_by": "Admin"
+    },
+    {
+      "attribute_id": 110,
+      "attribute_name": "Testing via add attribute",
+      "business_unit_name": "Operations",
+      "company_name": "Globex Industries",
+      "customer_location_name": "Bengaluru, India",
+      "is_active": false,
+      "created_on": "2026-11-02T15:02:26.981Z",
+      "created_by": "Admin",
+      "updated_on": "2026-11-02T15:02:49.158Z",
+      "updated_by": "Admin"
+    },
+    {
+      "attribute_id": 111,
+      "attribute_name": "Testing via add attribute",
+      "business_unit_name": "Operations",
+      "company_name": "Globex Industries",
+      "customer_location_name": "Chennai, India",
+      "is_active": true,
+      "created_on": "2026-11-02T15:14:01.730Z",
+      "created_by": "Admin"
+    },
+    {
+      "attribute_name": "New attribute for testing purposes",
+      "business_unit_name": "Operations",
+      "company_name": "Globex Industries",
+      "customer_location_name": "Chennai, India",
+      "is_active": true,
+      "created_on": "2026-11-03T07:32:55.385Z",
+      "created_by": "Admin",
+      "attribute_id": 112
     }
   ],
   "businessUnits": [
-    { "BusinessUnitId": 1, "BusinessUnitName": "Finance" },
-    { "BusinessUnitId": 2, "BusinessUnitName": "Human Resources" },
-    { "BusinessUnitId": 3, "BusinessUnitName": "Operations" },
-    { "BusinessUnitId": 4, "BusinessUnitName": "Marketing" },
-    { "BusinessUnitId": 5, "BusinessUnitName": "Supply Chain" }
+    {
+      "BusinessUnitId": 1,
+      "BusinessUnitName": "Finance"
+    },
+    {
+      "BusinessUnitId": 2,
+      "BusinessUnitName": "Human Resources"
+    },
+    {
+      "BusinessUnitId": 3,
+      "BusinessUnitName": "Operations"
+    },
+    {
+      "BusinessUnitId": 4,
+      "BusinessUnitName": "Marketing"
+    },
+    {
+      "BusinessUnitId": 5,
+      "BusinessUnitName": "Supply Chain"
+    }
   ],
   "companies": [
-    { "CompanyId": 1, "CompanyName": "Acme Corp" },
-    { "CompanyId": 2, "CompanyName": "Globex Industries" },
-    { "CompanyId": 3, "CompanyName": "Initech Software" }
+    {
+      "CompanyId": 1,
+      "CompanyName": "Acme Corp"
+    },
+    {
+      "CompanyId": 2,
+      "CompanyName": "Globex Industries"
+    },
+    {
+      "CompanyId": 3,
+      "CompanyName": "Initech Software"
+    }
   ],
   "customerLocation": [
-    { "CustomerLocationId": 1, "CustomerLocationName": "New York, USA", "BusinessUnitId": 1 },
-    { "CustomerLocationId": 2, "CustomerLocationName": "Mumbai, India", "BusinessUnitId": 1 },
-    { "CustomerLocationId": 3, "CustomerLocationName": "Berlin, Germany", "BusinessUnitId": 2 },
-    { "CustomerLocationId": 4, "CustomerLocationName": "London, UK", "BusinessUnitId": 2 },
-    { "CustomerLocationId": 5, "CustomerLocationName": "Bengaluru, India", "BusinessUnitId": 3 },
-    { "CustomerLocationId": 6, "CustomerLocationName": "Chennai, India", "BusinessUnitId": 3 },
-    { "CustomerLocationId": 7, "CustomerLocationName": "Sydney, Australia", "BusinessUnitId": 4 },
-    { "CustomerLocationId": 8, "CustomerLocationName": "Singapore", "BusinessUnitId": 4 },
-    { "CustomerLocationId": 9, "CustomerLocationName": "Pune, India", "BusinessUnitId": 5 },
-    { "CustomerLocationId": 10, "CustomerLocationName": "Hyderabad, India", "BusinessUnitId": 5 }
+    {
+      "CustomerLocationId": 1,
+      "CustomerLocationName": "New York, USA",
+      "BusinessUnitId": 1
+    },
+    {
+      "CustomerLocationId": 2,
+      "CustomerLocationName": "Mumbai, India",
+      "BusinessUnitId": 1
+    },
+    {
+      "CustomerLocationId": 3,
+      "CustomerLocationName": "Berlin, Germany",
+      "BusinessUnitId": 2
+    },
+    {
+      "CustomerLocationId": 4,
+      "CustomerLocationName": "London, UK",
+      "BusinessUnitId": 2
+    },
+    {
+      "CustomerLocationId": 5,
+      "CustomerLocationName": "Bengaluru, India",
+      "BusinessUnitId": 3
+    },
+    {
+      "CustomerLocationId": 6,
+      "CustomerLocationName": "Chennai, India",
+      "BusinessUnitId": 3
+    },
+    {
+      "CustomerLocationId": 7,
+      "CustomerLocationName": "Sydney, Australia",
+      "BusinessUnitId": 4
+    },
+    {
+      "CustomerLocationId": 8,
+      "CustomerLocationName": "Singapore",
+      "BusinessUnitId": 4
+    },
+    {
+      "CustomerLocationId": 9,
+      "CustomerLocationName": "Pune, India",
+      "BusinessUnitId": 5
+    },
+    {
+      "CustomerLocationId": 10,
+      "CustomerLocationName": "Hyderabad, India",
+      "BusinessUnitId": 5
+    }
   ]
 }

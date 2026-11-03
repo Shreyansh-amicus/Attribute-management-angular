@@ -1,34 +1,44 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { IBusinessUnit } from '../../../../shared/models/IBusinessUnit.model';
 import { ICompany } from '../../../../shared/models/ICompany.model';
 import { ICustomerLocationLookUp } from '../../../../shared/models/ILookup.model';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { attributeNameValidator } from '../../../../shared/validator/attribute-name.validator';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
-import { Router, RouterLink } from '@angular/router';
+
+import { attributeNameValidator } from '../../../../shared/validator/attribute-name.validator';
 import { AttributeService } from '../../../../core/services/attribute-service';
 import { Lookup } from '../../../../core/services/lookup';
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink],
   selector: 'app-add-attribute-page',
+  standalone: true,
+  imports: [ReactiveFormsModule, RouterLink],
   styleUrl: './add-attribute.css',
   templateUrl: './add-attribute.html',
 })
-export class AddAttributePage {
+export class AddAttributePage implements OnInit {
   private readonly lookupService = inject(Lookup);
   private readonly destroyRef = inject(DestroyRef);
   private readonly attributeService = inject(AttributeService);
   private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  businessUnits: IBusinessUnit[] = this.lookupService.getBusinessUnits();
-  allCustomerLocations: ICustomerLocationLookUp[] = this.lookupService.getCustomerLocation();
+  businessUnits: IBusinessUnit[] = [];
+  allCustomerLocations: ICustomerLocationLookUp[] = [];
   filteredCustomerLocations: ICustomerLocationLookUp[] = [];
-  companies: ICompany[] = this.lookupService.getCompanies();
+  companies: ICompany[] = [];
 
   submitted = false;
+  isLoadingLookups = true;
+  lookupsLoaded = false;
+  isSaving = false;
+
   successMessage = '';
+  errorMessage = '';
 
   attributeForm = new FormGroup({
     AttributeName: new FormControl('', {
@@ -50,13 +60,56 @@ export class AddAttributePage {
     }),
   });
 
-  constructor() {
-    console.log('Business units:', this.businessUnits);
-    console.log('Companies:', this.companies);
+  ngOnInit(): void {
+    this.loadLookups();
+    this.setupBusinessUnitListener();
+  }
+
+  // Fetch all lookup data from the API.
+
+  private loadLookups(): void {
+    this.isLoadingLookups = true;
+    this.lookupsLoaded = false;
+    this.errorMessage = '';
+
+    forkJoin({
+      businessUnits: this.lookupService.getBusinessUnits(),
+      companies: this.lookupService.getCompanies(),
+      customerLocations: this.lookupService.getCustomerLocation(),
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          console.log('Lookup data received:', response);
+
+          this.businessUnits = response.businessUnits;
+          this.companies = response.companies;
+          this.allCustomerLocations = response.customerLocations;
+
+          this.lookupsLoaded = true;
+          this.isLoadingLookups = false;
+
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          console.error('Failed to load lookup data:', error);
+
+          this.errorMessage = 'Unable to load form data. Please refresh the page and try again.';
+
+          this.isLoadingLookups = false;
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  // React when the selected Business Unit changes.
+  private setupBusinessUnitListener(): void {
     this.attributeForm.controls.BusinessUnitId.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((businessUnitId) => {
-        this.attributeForm.controls.CustomerLocationId.reset(null);
+        const locationControl = this.attributeForm.controls.CustomerLocationId;
+
+        locationControl.reset(null);
 
         this.filteredCustomerLocations =
           businessUnitId === null
@@ -66,9 +119,9 @@ export class AddAttributePage {
               );
 
         if (businessUnitId === null) {
-          this.attributeForm.controls.CustomerLocationId.disable();
+          locationControl.disable();
         } else {
-          this.attributeForm.controls.CustomerLocationId.enable();
+          locationControl.enable();
         }
       });
   }
@@ -79,12 +132,13 @@ export class AddAttributePage {
     return control.invalid && (control.touched || this.submitted);
   }
 
+  // POST: Create a new attribute.
   onSubmit(): void {
-    console.count('onSubmit called');
     this.submitted = true;
     this.successMessage = '';
+    this.errorMessage = '';
 
-    if (this.attributeForm.invalid) {
+    if (this.attributeForm.invalid || this.isSaving) {
       this.attributeForm.markAllAsTouched();
       return;
     }
@@ -104,17 +158,14 @@ export class AddAttributePage {
     );
 
     if (!selectedBusinessUnit || !selectedCompany || !selectedLocation) {
-      this.successMessage = '';
+      this.errorMessage =
+        'Please select valid Business Unit, Company and Customer Location values.';
       return;
     }
 
-    const newAttribute: IAttributeModel = {
-      AttributeId:
-        Math.max(
-          0,
-          ...this.attributeService.mockAttributes.map((attribute) => attribute.AttributeId),
-        ) + 1,
-
+    // Do not generate AttributeId here.
+    // json-server generates the ID for the new record.
+    const newAttribute: Omit<IAttributeModel, 'AttributeId'> = {
       AttributeName: formValue.AttributeName.trim(),
       BusinessUnitName: selectedBusinessUnit.BusinessUnitName,
       CompanyName: selectedCompany.CompanyName,
@@ -124,26 +175,28 @@ export class AddAttributePage {
       CreatedBy: 'Admin',
     };
 
-    console.log('FORM service ID:', this.attributeService.debugInstanceId);
+    this.isSaving = true;
 
-    this.attributeService.addAttribute(newAttribute);
+    this.attributeService
+      .createAttribute(newAttribute)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (createdAttribute) => {
+          this.isSaving = false;
 
-    console.log('Form page sees:', this.attributeService.mockAttributes);
+          this.successMessage = 'Attribute added successfully!';
 
-    this.successMessage = 'Attribute added successfully!';
+          console.log('Attribute created through API:', createdAttribute);
 
-    console.log('Attribute created:', newAttribute);
+          // Navigate only after the API confirms successful creation.
+          void this.router.navigate(['/attributes']);
+        },
+        error: (error) => {
+          console.error('Failed to create attribute:', error);
 
-    this.attributeForm.reset({
-      AttributeName: '',
-      BusinessUnitId: null,
-      CustomerLocationId: { value: null, disabled: true } as never,
-      CompanyId: null,
-      IsActive: true,
-    });
-
-    this.filteredCustomerLocations = [];
-    this.submitted = false;
-    void this.router.navigate(['/']);
+          this.isSaving = false;
+          this.errorMessage = 'Unable to create the attribute. Please try again.';
+        },
+      });
   }
 }

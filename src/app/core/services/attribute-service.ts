@@ -1,65 +1,62 @@
 import { inject, Injectable } from '@angular/core';
-import { IAttributeModel } from '../../shared/models/IAttribute.model';
-import { IBusinessUnit } from '../../shared/models/IBusinessUnit.model';
-import { ICompany } from '../../shared/models/ICompany.model';
-import { ICustomerLocationLookUp } from '../../shared/models/ILookup.model';
 import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+
+import { IAttributeModel } from '../../shared/models/IAttribute.model';
+import {
+  AttributeDTO,
+  CreateAttributeDTO
+} from '../../shared/models/attribute.dto';
+
 import { environment } from '../../../environments/environment';
-import { map, Observable, switchMap } from 'rxjs';
+import { MappingService } from './mapping';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AttributeService {
-  readonly debugInstanceId = Math.random().toString(36).slice(2);
-
-  constructor() {
-    console.log('AttributeService created:', this.debugInstanceId);
-  }
   private readonly http = inject(HttpClient);
+  private readonly mapper = inject(MappingService);
 
-  private readonly apiUrl = `${environment.apiUrl}`;
-  
+  private readonly apiUrl = `${environment.apiUrl}/attributes`;
+
   // GET: Fetch all attributes.
   getAttributes(): Observable<IAttributeModel[]> {
-    return this.http.get<IAttributeModel[]>(this.apiUrl);
+    return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
+      map((dtos) => dtos.map((dto) => this.mapper.toAttribute(dto)))
+    );
   }
 
   // GET: Fetch an attribute by ID.
   getAttributeById(id: number): Observable<IAttributeModel> {
-    return this.http.get<IAttributeModel>(`${this.apiUrl}/${id}`);
+    return this.http.get<AttributeDTO>(`${this.apiUrl}/${id}`).pipe(
+      map((dto) => this.mapper.toAttribute(dto))
+    );
   }
 
   // POST: Create a new attribute.
   createAttribute(
     attribute: Omit<IAttributeModel, 'AttributeId'>,
   ): Observable<IAttributeModel> {
-    return this.getAttributes().pipe(
-      map((attributes) => {
-        const nextId =
-          attributes.length > 0
-            ? Math.max(...attributes.map((item) => item.AttributeId)) + 1
-            : 101;
+    const dto: CreateAttributeDTO = this.mapper.toCreateDTO(attribute);
 
-        return {
-          ...attribute,
-          AttributeId: nextId,
-        } as IAttributeModel;
-      }),
-      switchMap((newAttribute) =>
-        this.http.post<IAttributeModel>(this.apiUrl, newAttribute),
-      ),
+    return this.http.post<AttributeDTO>(this.apiUrl, dto).pipe(
+      map((response) => this.mapper.toAttribute(response))
     );
   }
 
-  // PUT: Update an existing attribute.
+  // PUT: Replace an existing attribute.
   updateAttribute(
     id: number,
     attribute: IAttributeModel,
   ): Observable<IAttributeModel> {
-    return this.http.put<IAttributeModel>(
+    const dto: AttributeDTO = this.mapper.toDTO(attribute);
+
+    return this.http.put<AttributeDTO>(
       `${this.apiUrl}/${id}`,
-      attribute,
+      dto
+    ).pipe(
+      map((response) => this.mapper.toAttribute(response))
     );
   }
 
@@ -68,10 +65,8 @@ export class AttributeService {
     id: number,
     changes: Partial<IAttributeModel>,
   ): Observable<IAttributeModel> {
-    return this.http.patch<IAttributeModel>(
-      `${this.apiUrl}/${id}`,
-      changes,
-    );
+    // We'll implement partial DTO mapping separately.
+    throw new Error('PATCH mapping has not been implemented yet.');
   }
 
   // DELETE: Delete an attribute.
