@@ -14,6 +14,7 @@ import {
   catchError,
   of,
   interval,
+  mergeMap,
 } from 'rxjs';
 
 import { AttributeCard } from '../../../../shared/components/attribute-card/attribute-card';
@@ -84,7 +85,7 @@ export class AttributeList {
         debounceTime(300),
 
         // Switch to the latest search request.
-        switchMap((searchTerm) => {
+        mergeMap((searchTerm) => {
           const request$ = searchTerm
             ? this.attributeService.searchAttributes(searchTerm)
             : this.attributeService.getAttributes();
@@ -96,12 +97,12 @@ export class AttributeList {
               this.isLoading = false;
               this.isSearching = false;
 
-              console.log('Attributes received from API:', attributes);
+              console.log('Search completed for:', searchTerm);
+              console.log('Attributes received:', attributes);
 
               this.cdr.markForCheck();
             }),
 
-            // Handle errors without terminating valueChanges.
             catchError((error) => {
               console.error('Failed to fetch attributes:', error);
 
