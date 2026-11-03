@@ -126,6 +126,28 @@
       "created_on": "2026-11-03T07:32:55.385Z",
       "created_by": "Admin",
       "attribute_id": 112
+    },
+    {
+      "attribute_name": "Demo Testing via AddAttribute",
+      "business_unit_name": "Human Resources",
+      "company_name": "Initech Software",
+      "customer_location_name": "Berlin, Germany",
+      "is_active": true,
+      "created_on": "2026-11-03T10:10:43.974Z",
+      "created_by": "Admin",
+      "attribute_id": 113
+    },
+    {
+      "attribute_id": 114,
+      "attribute_name": "Testing via add attribute",
+      "business_unit_name": "Marketing",
+      "company_name": "Initech Software",
+      "customer_location_name": "Singapore",
+      "is_active": false,
+      "created_on": "2026-11-03T11:46:38.668Z",
+      "created_by": "Admin",
+      "updated_on": "2026-11-03T11:47:11.732Z",
+      "updated_by": "Admin"
     }
   ],
   "businessUnits": [

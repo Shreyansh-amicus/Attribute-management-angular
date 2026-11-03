@@ -1,5 +1,22 @@
-import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AsyncPipe,
+} from '@angular/common';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
+
+import {
+  ReactiveFormsModule,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+
 import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -10,27 +27,32 @@ import { ICustomerLocationLookUp } from '../../../../shared/models/ILookup.model
 import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
 
 import { attributeNameValidator } from '../../../../shared/validator/attribute-name.validator';
+
 import { AttributeService } from '../../../../core/services/attribute-service';
 import { Lookup } from '../../../../core/services/lookup';
+import { StoreService } from '../../../../core/services/store';
 
 @Component({
   selector: 'app-add-attribute-page',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [AsyncPipe, ReactiveFormsModule, RouterLink],
   styleUrl: './add-attribute.css',
   templateUrl: './add-attribute.html',
 })
 export class AddAttributePage implements OnInit {
   private readonly lookupService = inject(Lookup);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly attributeService = inject(AttributeService);
+  private readonly store = inject(StoreService);
+
+  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  businessUnits: IBusinessUnit[] = [];
-  allCustomerLocations: ICustomerLocationLookUp[] = [];
+  // Observable containing centralized lookup data.
+  readonly lookups$ = this.store.lookups$;
+
+  // Customer locations filtered by the selected Business Unit.
   filteredCustomerLocations: ICustomerLocationLookUp[] = [];
-  companies: ICompany[] = [];
 
   submitted = false;
   isLoadingLookups = true;
@@ -40,20 +62,31 @@ export class AddAttributePage implements OnInit {
   successMessage = '';
   errorMessage = '';
 
+  // Reactive form.
   attributeForm = new FormGroup({
     AttributeName: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3), attributeNameValidator()],
+      validators: [
+        Validators.required,
+        Validators.minLength(3),
+        attributeNameValidator(),
+      ],
     }),
 
-    BusinessUnitId: new FormControl<number | null>(null, Validators.required),
+    BusinessUnitId: new FormControl<number | null>(
+      null,
+      Validators.required,
+    ),
 
     CustomerLocationId: new FormControl<number | null>(
       { value: null, disabled: true },
       Validators.required,
     ),
 
-    CompanyId: new FormControl<number | null>(null, Validators.required),
+    CompanyId: new FormControl<number | null>(
+      null,
+      Validators.required,
+    ),
 
     IsActive: new FormControl(true, {
       nonNullable: true,
@@ -65,8 +98,7 @@ export class AddAttributePage implements OnInit {
     this.setupBusinessUnitListener();
   }
 
-  // Fetch all lookup data from the API.
-
+  // Fetch lookup data and store it centrally.
   private loadLookups(): void {
     this.isLoadingLookups = true;
     this.lookupsLoaded = false;
@@ -82,21 +114,24 @@ export class AddAttributePage implements OnInit {
         next: (response) => {
           console.log('Lookup data received:', response);
 
-          this.businessUnits = response.businessUnits;
-          this.companies = response.companies;
-          this.allCustomerLocations = response.customerLocations;
+          // Update centralized application state.
+          this.store.setLookups(response);
 
           this.lookupsLoaded = true;
           this.isLoadingLookups = false;
 
           this.cdr.markForCheck();
         },
+
         error: (error) => {
           console.error('Failed to load lookup data:', error);
 
-          this.errorMessage = 'Unable to load form data. Please refresh the page and try again.';
+          this.errorMessage =
+            'Unable to load form data. Please refresh the page and try again.';
 
           this.isLoadingLookups = false;
+          this.lookupsLoaded = false;
+
           this.cdr.markForCheck();
         },
       });
@@ -107,26 +142,40 @@ export class AddAttributePage implements OnInit {
     this.attributeForm.controls.BusinessUnitId.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((businessUnitId) => {
-        const locationControl = this.attributeForm.controls.CustomerLocationId;
+        const locationControl =
+          this.attributeForm.controls.CustomerLocationId;
 
+        // Reset previously selected location.
         locationControl.reset(null);
 
+        // Read the latest lookup state.
+        const allCustomerLocations =
+          this.store.snapshot.lookups.customerLocations;
+
+        // Filter locations based on selected Business Unit.
         this.filteredCustomerLocations =
           businessUnitId === null
             ? []
-            : this.allCustomerLocations.filter(
-                (location) => location.BusinessUnitId === businessUnitId,
+            : allCustomerLocations.filter(
+                (location) =>
+                  location.BusinessUnitId === businessUnitId,
               );
 
+        // Enable or disable the location dropdown.
         if (businessUnitId === null) {
           locationControl.disable();
         } else {
           locationControl.enable();
         }
+
+        this.cdr.markForCheck();
       });
   }
 
-  showError(controlName: keyof typeof this.attributeForm.controls): boolean {
+  // Check whether a form control should display validation errors.
+  showError(
+    controlName: keyof typeof this.attributeForm.controls,
+  ): boolean {
     const control = this.attributeForm.controls[controlName];
 
     return control.invalid && (control.touched || this.submitted);
@@ -138,6 +187,15 @@ export class AddAttributePage implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
 
+    // Prevent submission before lookup data is available.
+    if (!this.lookupsLoaded || this.isLoadingLookups) {
+      this.errorMessage =
+        'Please wait until the lookup data has loaded.';
+
+      return;
+    }
+
+    // Prevent invalid or duplicate submissions.
     if (this.attributeForm.invalid || this.isSaving) {
       this.attributeForm.markAllAsTouched();
       return;
@@ -145,26 +203,38 @@ export class AddAttributePage implements OnInit {
 
     const formValue = this.attributeForm.getRawValue();
 
-    const selectedBusinessUnit = this.businessUnits.find(
-      (unit) => unit.BusinessUnitId === formValue.BusinessUnitId,
+    // Get the latest lookup data from the store.
+    const lookups = this.store.snapshot.lookups;
+
+    const selectedBusinessUnit = lookups.businessUnits.find(
+      (unit: IBusinessUnit) =>
+        unit.BusinessUnitId === formValue.BusinessUnitId,
     );
 
-    const selectedCompany = this.companies.find(
-      (company) => company.CompanyId === formValue.CompanyId,
+    const selectedCompany = lookups.companies.find(
+      (company: ICompany) =>
+        company.CompanyId === formValue.CompanyId,
     );
 
-    const selectedLocation = this.allCustomerLocations.find(
-      (location) => location.CustomerLocationId === formValue.CustomerLocationId,
+    const selectedLocation = lookups.customerLocations.find(
+      (location: ICustomerLocationLookUp) =>
+        location.CustomerLocationId === formValue.CustomerLocationId,
     );
 
-    if (!selectedBusinessUnit || !selectedCompany || !selectedLocation) {
+    // Validate selected lookup records.
+    if (
+      !selectedBusinessUnit ||
+      !selectedCompany ||
+      !selectedLocation
+    ) {
       this.errorMessage =
         'Please select valid Business Unit, Company and Customer Location values.';
+
       return;
     }
 
-    // Do not generate AttributeId here.
-    // json-server generates the ID for the new record.
+    // Create the new attribute object.
+    // AttributeId is generated by JSON Server.
     const newAttribute: Omit<IAttributeModel, 'AttributeId'> = {
       AttributeName: formValue.AttributeName.trim(),
       BusinessUnitName: selectedBusinessUnit.BusinessUnitName,
@@ -184,18 +254,25 @@ export class AddAttributePage implements OnInit {
         next: (createdAttribute) => {
           this.isSaving = false;
 
-          this.successMessage = 'Attribute added successfully!';
+          console.log(
+            'Attribute created and added to store:',
+            createdAttribute,
+          );
 
-          console.log('Attribute created through API:', createdAttribute);
-
-          // Navigate only after the API confirms successful creation.
+          // The AttributeService already updates the store.
+          // Navigate after successful API creation.
           void this.router.navigate(['/attributes']);
         },
+
         error: (error) => {
           console.error('Failed to create attribute:', error);
 
           this.isSaving = false;
-          this.errorMessage = 'Unable to create the attribute. Please try again.';
+
+          this.errorMessage =
+            'Unable to create the attribute. Please try again.';
+
+          this.cdr.markForCheck();
         },
       });
   }

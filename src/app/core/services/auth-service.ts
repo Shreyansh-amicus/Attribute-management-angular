@@ -1,21 +1,33 @@
-import { Injectable, signal } from '@angular/core';
+
+import { Injectable, inject } from '@angular/core';
+import { StoreService } from './store';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
+  private readonly store = inject(StoreService);
 
-  private readonly loggedIn = signal(false);
+  // Components can observe authentication state.
+  readonly isAuthenticated$ = this.store.isAuthenticated$;
 
-  isLoggedIn(): boolean {
-    return this.loggedIn();
+  // Keep this getter for synchronous route guard checks.
+  get isAuthenticated(): boolean {
+    return this.store.snapshot.isAuthenticated;
   }
 
-  login(): void {
-    this.loggedIn.set(true);
+  login(username: string, password: string): boolean {
+    if (!username.trim() || !password.trim()) {
+      return false;
+    }
+
+    // Demo authentication only.
+    this.store.setAuthenticated(true);
+
+    return true;
   }
 
   logout(): void {
-    this.loggedIn.set(false);
+    this.store.setAuthenticated(false);
   }
 }

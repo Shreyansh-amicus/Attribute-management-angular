@@ -1,4 +1,14 @@
-import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -11,27 +21,32 @@ import { ICustomerLocationLookUp } from '../../../../shared/models/ILookup.model
 
 import { AttributeService } from '../../../../core/services/attribute-service';
 import { Lookup } from '../../../../core/services/lookup';
+import { StoreService } from '../../../../core/services/store';
 
 @Component({
   selector: 'app-edit-attribute',
   standalone: true,
-  imports: [FormsModule],
+  imports: [AsyncPipe, FormsModule],
   templateUrl: './edit-attribute.html',
   styleUrl: './edit-attribute.css',
 })
 export class EditAttribute implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+
   private readonly attributeService = inject(AttributeService);
   private readonly lookupService = inject(Lookup);
+  private readonly store = inject(StoreService);
+
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);
 
   @ViewChild('editForm') editForm?: NgForm;
 
-  businessUnits: IBusinessUnit[] = [];
-  companies: ICompany[] = [];
-  allCustomerLocations: ICustomerLocationLookUp[] = [];
+  // Observable containing centralized lookup data.
+  readonly lookups$ = this.store.lookups$;
+
+  // Locations filtered according to the selected Business Unit.
   filteredCustomerLocations: ICustomerLocationLookUp[] = [];
 
   originalAttribute?: IAttributeModel;
@@ -56,22 +71,27 @@ export class EditAttribute implements OnInit {
 
   ngOnInit(): void {
     // The resolver supplies this attribute before the component loads.
-    this.originalAttribute = this.route.snapshot.data['attribute'] as IAttributeModel | undefined;
+    this.originalAttribute =
+      this.route.snapshot.data['attribute'] as
+        | IAttributeModel
+        | undefined;
 
     if (!this.originalAttribute) {
       this.isLoading = false;
-      this.errorMessage = 'The requested attribute could not be loaded.';
+      this.errorMessage =
+        'The requested attribute could not be loaded.';
+
       return;
     }
 
     this.loadLookups();
   }
 
-  // Load all dropdown data from the API.
+  // Fetch lookup data and save it in centralized application state.
   private loadLookups(): void {
     this.isLoading = true;
-    this.errorMessage = '';
     this.lookupsLoaded = false;
+    this.errorMessage = '';
 
     forkJoin({
       businessUnits: this.lookupService.getBusinessUnits(),
@@ -81,81 +101,109 @@ export class EditAttribute implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
-          console.log('Business Units:', response.businessUnits);
-          console.log('Companies:', response.companies);
-          console.log('Customer Locations:', response.customerLocations);
+          console.log('Lookup data received:', response);
 
-          this.businessUnits = response.businessUnits;
-          this.companies = response.companies;
-          this.allCustomerLocations = response.customerLocations;
-
-          this.populateForm();
+          // Update centralized lookup state.
+          this.store.setLookups(response);
 
           this.lookupsLoaded = true;
           this.isLoading = false;
 
+          // Populate the form after lookup data is available.
+          this.populateForm();
+
           this.cdr.markForCheck();
         },
-        error: (error) => {
-          console.error('Failed to load edit form lookup data:', error);
 
-          this.errorMessage = 'Unable to load the form data. Please try again later.';
+        error: (error) => {
+          console.error(
+            'Failed to load edit form lookup data:',
+            error,
+          );
+
+          this.errorMessage =
+            'Unable to load the form data. Please try again later.';
 
           this.isLoading = false;
+          this.lookupsLoaded = false;
+
           this.cdr.markForCheck();
         },
       });
   }
 
-  // Convert the attribute's stored names into dropdown IDs.
+  // Convert stored lookup names into dropdown IDs.
   private populateForm(): void {
     if (!this.originalAttribute) {
       return;
     }
 
     const attribute = this.originalAttribute;
+    const lookups = this.store.snapshot.lookups;
 
     const businessUnitId =
-      this.businessUnits.find((unit) => unit.BusinessUnitName === attribute.BusinessUnitName)
-        ?.BusinessUnitId ?? null;
+      lookups.businessUnits.find(
+        (unit: IBusinessUnit) =>
+          unit.BusinessUnitName === attribute.BusinessUnitName,
+      )?.BusinessUnitId ?? null;
+
+    const companyId =
+      lookups.companies.find(
+        (company: ICompany) =>
+          company.CompanyName === attribute.CompanyName,
+      )?.CompanyId ?? null;
+
+    // First filter locations using the original Business Unit.
+    const locations =
+      businessUnitId === null
+        ? []
+        : lookups.customerLocations.filter(
+            (location: ICustomerLocationLookUp) =>
+              location.BusinessUnitId === businessUnitId,
+          );
+
+    // Find the original location only within that Business Unit.
+    const customerLocationId =
+      locations.find(
+        (location) =>
+          location.CustomerLocationName ===
+          attribute.CustomerLocationName,
+      )?.CustomerLocationId ?? null;
 
     this.form = {
       AttributeName: attribute.AttributeName,
-
       BusinessUnitId: businessUnitId,
-
-      CustomerLocationId:
-        this.allCustomerLocations.find(
-          (location) => location.CustomerLocationName === attribute.CustomerLocationName,
-        )?.CustomerLocationId ?? null,
-
-      CompanyId:
-        this.companies.find((company) => company.CompanyName === attribute.CompanyName)
-          ?.CompanyId ?? null,
-
+      CustomerLocationId: customerLocationId,
+      CompanyId: companyId,
       IsActive: attribute.IsActive,
     };
 
-    this.updateFilteredLocations();
+    this.filteredCustomerLocations = locations;
   }
 
+  // Navigate back to the Attribute List.
   cancel(): void {
     void this.router.navigate(['/attributes']);
   }
 
-  onBusinessUnitChange(): void {
-    // Clear the previous location when the Business Unit changes.
+  // Handle Business Unit changes.
+  onBusinessUnitChange(businessUnitId: number | null): void {
+    // Clear the previously selected location.
     this.form.CustomerLocationId = null;
-    this.updateFilteredLocations();
-  }
 
-  private updateFilteredLocations(): void {
+    const allCustomerLocations =
+      this.store.snapshot.lookups.customerLocations;
+
+    // Filter locations belonging to the selected Business Unit.
     this.filteredCustomerLocations =
-      this.form.BusinessUnitId === null
+      businessUnitId === null
         ? []
-        : this.allCustomerLocations.filter(
-            (location) => location.BusinessUnitId === this.form.BusinessUnitId,
+        : allCustomerLocations.filter(
+            (location: ICustomerLocationLookUp) =>
+              location.BusinessUnitId === businessUnitId,
           );
+
+    this.cdr.markForCheck();
   }
 
   // PUT: Update an existing attribute.
@@ -164,61 +212,104 @@ export class EditAttribute implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
 
+    if (!this.lookupsLoaded || this.isLoading) {
+      this.errorMessage =
+        'Please wait until the lookup data has loaded.';
+
+      return;
+    }
+
     if (editForm.invalid || !this.originalAttribute || this.isSaving) {
       editForm.control.markAllAsTouched();
       return;
     }
 
-    const selectedBusinessUnit = this.businessUnits.find(
-      (unit) => unit.BusinessUnitId === this.form.BusinessUnitId,
+    // Read the latest lookup records from the store.
+    const lookups = this.store.snapshot.lookups;
+
+    const selectedBusinessUnit = lookups.businessUnits.find(
+      (unit: IBusinessUnit) =>
+        unit.BusinessUnitId === this.form.BusinessUnitId,
     );
 
-    const selectedCompany = this.companies.find(
-      (company) => company.CompanyId === this.form.CompanyId,
+    const selectedCompany = lookups.companies.find(
+      (company: ICompany) =>
+        company.CompanyId === this.form.CompanyId,
     );
 
-    const selectedLocation = this.allCustomerLocations.find(
-      (location) => location.CustomerLocationId === this.form.CustomerLocationId,
+    const selectedLocation = lookups.customerLocations.find(
+      (location: ICustomerLocationLookUp) =>
+        location.CustomerLocationId ===
+          this.form.CustomerLocationId &&
+        location.BusinessUnitId === this.form.BusinessUnitId,
     );
 
-    if (!selectedBusinessUnit || !selectedCompany || !selectedLocation) {
-      this.errorMessage = 'Please select valid dropdown values.';
+    // Validate selected lookup records.
+    if (
+      !selectedBusinessUnit ||
+      !selectedCompany ||
+      !selectedLocation
+    ) {
+      this.errorMessage =
+        'Please select valid Business Unit, Company and Customer Location values.';
+
       return;
     }
 
+    // Prepare the updated attribute.
     const updatedAttribute: IAttributeModel = {
       ...this.originalAttribute,
+
       AttributeName: this.form.AttributeName.trim(),
+
       BusinessUnitName: selectedBusinessUnit.BusinessUnitName,
+
       CompanyName: selectedCompany.CompanyName,
-      CustomerLocationName: selectedLocation.CustomerLocationName,
+
+      CustomerLocationName:
+        selectedLocation.CustomerLocationName,
+
       IsActive: this.form.IsActive,
+
       UpdatedOn: new Date(),
+
       UpdatedBy: 'Admin',
     };
 
     this.isSaving = true;
 
     this.attributeService
-      .updateAttribute(this.originalAttribute.AttributeId, updatedAttribute)
+      .updateAttribute(
+        this.originalAttribute.AttributeId,
+        updatedAttribute,
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (updated) => {
-          console.log('Attribute updated through API:', updated);
+          console.log(
+            'Attribute updated and store synchronized:',
+            updated,
+          );
 
           this.isSaving = false;
           this.saved = true;
-          this.successMessage = 'Attribute updated successfully!';
+
+          this.successMessage =
+            'Attribute updated successfully!';
 
           this.cdr.markForCheck();
 
+          // Navigate only after successful API update.
           void this.router.navigate(['/attributes']);
         },
+
         error: (error) => {
           console.error('Failed to update attribute:', error);
 
           this.isSaving = false;
-          this.errorMessage = 'Unable to update the attribute. Please try again.';
+
+          this.errorMessage =
+            'Unable to update the attribute. Please try again.';
 
           this.cdr.markForCheck();
         },
@@ -231,6 +322,8 @@ export class EditAttribute implements OnInit {
       return true;
     }
 
-    return confirm('You have unsaved changes. Do you want to leave this page?');
+    return confirm(
+      'You have unsaved changes. Do you want to leave this page?',
+    );
   }
 }

@@ -1,4 +1,5 @@
-import { Component, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -19,35 +20,43 @@ import {
 import { AttributeCard } from '../../../../shared/components/attribute-card/attribute-card';
 import { AppActiveStatus } from '../../../../shared/directives/app-active-status';
 import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
-import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
 import { AttributeService } from '../../../../core/services/attribute-service';
+import { StoreService } from '../../../../core/services/store';
 
 @Component({
   selector: 'app-attribute-list',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, AttributeCard, AppActiveStatus, RelativeTimePipe],
+  imports: [
+    AsyncPipe,
+    ReactiveFormsModule,
+    RouterLink,
+    AttributeCard,
+    AppActiveStatus,
+    RelativeTimePipe,
+  ],
   styleUrl: './attribute-list.css',
   templateUrl: './attribute-list.html',
 })
 export class AttributeList {
   private readonly attributeService = inject(AttributeService);
+  private readonly store = inject(StoreService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly cdr = inject(ChangeDetectorRef);
 
-  attributes: IAttributeModel[] = [];
+  // Read application state from the centralized store.
+  readonly attributes$ = this.store.attributes$;
+  readonly isLoading$ = this.store.isLoading$;
 
   searchControl = new FormControl('', {
     nonNullable: true,
   });
 
   isTableView = true;
-  isLoading = true;
   isSearching = false;
   errorMessage = '';
 
-  private hasLoaded = false;
-
   ngOnInit(): void {
+    // Temporary Task 12 demonstration.
+    // Keep this only while testing subscription cleanup.
     interval(2000)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((count) => {
@@ -67,17 +76,10 @@ export class AttributeList {
         // Ignore consecutive duplicate search terms.
         distinctUntilChanged(),
 
-        // Show the indicator immediately, before the debounce period.
+        // Show the searching indicator immediately.
         tap(() => {
           this.errorMessage = '';
-
-          if (this.hasLoaded) {
-            this.isSearching = true;
-          } else {
-            this.isLoading = true;
-          }
-
-          this.cdr.markForCheck();
+          this.isSearching = true;
         }),
 
         // Wait until the user stops typing for 300 milliseconds.
@@ -90,29 +92,11 @@ export class AttributeList {
             : this.attributeService.getAttributes();
 
           return request$.pipe(
-            tap((attributes) => {
-              this.attributes = attributes;
-              this.hasLoaded = true;
-              this.isLoading = false;
-              this.isSearching = false;
-
-              console.log('Attributes received from API:', attributes);
-
-              this.cdr.markForCheck();
-            }),
-
-            // Handle errors without terminating valueChanges.
             catchError((error) => {
               console.error('Failed to fetch attributes:', error);
 
-              this.errorMessage = 'Unable to load attributes. Please try again later.';
-
-              this.attributes = [];
-              this.hasLoaded = true;
-              this.isLoading = false;
-              this.isSearching = false;
-
-              this.cdr.markForCheck();
+              this.errorMessage =
+                'Unable to load attributes. Please try again later.';
 
               return of([]);
             }),
@@ -122,7 +106,16 @@ export class AttributeList {
         // Automatically unsubscribe when this component is destroyed.
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe();
+      .subscribe({
+        next: (attributes) => {
+          this.isSearching = false;
+          console.log('Attributes received from store-backed service:', attributes);
+        },
+        error: (error) => {
+          console.error('Unexpected search pipeline error:', error);
+          this.isSearching = false;
+        },
+      });
   }
 
   onClick(): void {

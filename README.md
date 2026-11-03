@@ -828,3 +828,303 @@ This moves the filtering responsibility from the UI directive to the API integra
 Reactive search provides a more scalable approach to searching application data.
 
 By combining debouncing, duplicate-value detection, and request switching, the application reduces unnecessary API calls and prevents outdated search results from replacing newer results.
+
+### Task 13 – Centralized State Management Using BehaviorSubject
+
+#### 1. Objective
+
+The objective of this task was to implement a centralized state management approach using **RxJS BehaviorSubject**.
+
+Instead of maintaining application data independently inside different components and services, a centralized `StoreService` was introduced to manage shared application state.
+
+The store maintains the following state:
+
+- `attributes[]` – Stores the list of attributes.
+- `lookups` – Stores Business Units, Companies, and Customer Locations.
+- `isLoading` – Tracks whether data is currently being loaded.
+- `isAuthenticated` – Tracks the user's authentication status.
+
+This approach provides a single source of truth for shared application data.
+
+#### 2. StoreService Implementation
+
+Created `StoreService` inside:
+
+`src/app/core/services/store.ts`
+
+The service uses a `BehaviorSubject<AppState>` to maintain the current application state.
+
+**Why BehaviorSubject?**
+
+A `BehaviorSubject` stores the latest emitted value and immediately provides that value to new subscribers. This is useful when multiple components need access to the same application data, even if they subscribe at different times.
+
+The store exposes its state through observable slices:
+
+- `attributes$`
+- `lookups$`
+- `isLoading$`
+- `isAuthenticated$`
+
+Components and services can subscribe to these observables without directly modifying the internal `BehaviorSubject`.
+
+A snapshot getter was also provided for cases where the current state is needed synchronously, such as retrieving selected lookup values during form submission.
+
+#### 3. Centralized State Updates
+
+All state changes are performed through methods exposed by `StoreService`.
+
+The implementation includes methods such as:
+
+- `setAttributes()` – Replaces the current attribute collection.
+- `addAttribute()` – Adds a newly created attribute.
+- `updateAttribute()` – Updates an existing attribute.
+- `removeAttribute()` – Removes an attribute by ID.
+- `setLookups()` – Updates lookup data.
+- `setLoading()` – Updates the loading state.
+- `setAuthenticated()` – Updates authentication status.
+
+The store uses the spread operator and array methods such as `map()` and `filter()` to create new references instead of modifying existing state.
+
+For example:
+
+```typescript
+addAttribute(attribute: IAttributeModel): void {
+  this.updateState({
+    attributes: [...this.snapshot.attributes, attribute]
+  });
+}
+```
+
+Updating an existing attribute:
+
+```typescript
+updateAttribute(updatedAttribute: IAttributeModel): void {
+  this.updateState({
+    attributes: this.snapshot.attributes.map(attribute =>
+      attribute.AttributeId === updatedAttribute.AttributeId
+        ? updatedAttribute
+        : attribute
+    )
+  });
+}
+```
+
+Removing an attribute:
+
+```typescript
+removeAttribute(id: number): void {
+  this.updateState({
+    attributes: this.snapshot.attributes.filter(
+      attribute => attribute.AttributeId !== id
+    )
+  });
+}
+```
+
+#### 4. Migrating AttributeService to StoreService
+
+The `AttributeService` was updated to communicate with the centralized store.
+
+Previously, components were responsible for maintaining their own copies of attribute data. After this migration, the service updates the store after successful API operations.
+
+The following operations were connected to the store:
+
+| API Operation | Store Update |
+|---|---|
+| GET all attributes | Updates `attributes[]` |
+| GET attributes with search | Updates `attributes[]` with filtered results |
+| POST attribute | Adds the created attribute |
+| PUT attribute | Updates the existing attribute |
+| PATCH attribute | Updates the modified attribute |
+| DELETE attribute | Removes the deleted attribute |
+
+The service also updates the loading state when fetching attributes.
+
+For example:
+
+```typescript
+getAttributes(): Observable<IAttributeModel[]> {
+  this.store.setLoading(true);
+
+  return this.http.get<AttributeDTO[]>(this.apiUrl).pipe(
+    map(dtos => dtos.map(dto => this.mapper.toAttribute(dto))),
+    tap(attributes => this.store.setAttributes(attributes)),
+    finalize(() => this.store.setLoading(false))
+  );
+}
+```
+
+The `tap()` operator performs the store update after the API response is received without changing the emitted data.
+
+The `finalize()` operator resets the loading state when the request completes, errors, or is cancelled.
+
+#### 5. Migrating AuthService to StoreService
+
+The `AuthService` was also migrated to use the centralized store.
+
+Instead of maintaining a separate authentication variable, it now reads and updates the `isAuthenticated` state through `StoreService`.
+
+The service exposes:
+
+- `login()` – Updates authentication state after successful validation.
+- `logout()` – Resets authentication state.
+- `isAuthenticated` – Provides the current authentication status.
+- `isAuthenticated$` – Exposes authentication status as an observable.
+
+This allows route guards and other application components to access the same authentication state.
+
+**Note:** The current authentication implementation is a demonstration using in-memory state. Authentication status resets when the application is refreshed because no persistent authentication mechanism or backend authentication flow has been implemented.
+
+#### 6. Migrating Components to AsyncPipe
+
+Components that display shared application data were updated to consume observable state from `StoreService` using Angular's `AsyncPipe`.
+
+The `AsyncPipe` automatically subscribes to the observable, provides its latest emitted value to the template, and handles subscription cleanup when the component is destroyed.
+
+**AttributeList Component**
+
+The AttributeList component now consumes:
+
+- `attributes$` – Displays the attributes maintained by the store.
+- `isLoading$` – Displays the loading indicator.
+
+Instead of maintaining a separate local copy of the attribute collection, the component receives the latest data from the centralized store.
+
+Example:
+
+```typescript
+readonly attributes$ = this.store.attributes$;
+readonly isLoading$ = this.store.isLoading$;
+```
+
+Template usage:
+
+```html
+@if (isLoading$ | async) {
+  <p>Loading attributes...</p>
+}
+
+@if (attributes$ | async; as attributes) {
+  @for (attribute of attributes; track attribute.AttributeId) {
+    <app-attribute-card [attribute]="attribute" />
+  }
+}
+```
+
+**AddAttribute and EditAttribute Components**
+
+Both components now consume `lookups$` from the store.
+
+Business Units, Companies, and Customer Locations are loaded through the Lookup service and then stored centrally using `setLookups()`.
+
+The templates use `AsyncPipe` to access the lookup data.
+
+This avoids maintaining separate copies of shared lookup information across components.
+
+#### 7. Why Is Immutability Important?
+
+Immutability means creating a new object or array whenever state changes instead of directly modifying the existing object or array.
+
+For example, consider adding an attribute.
+
+**Mutable approach – Avoid this:**
+
+```typescript
+this.snapshot.attributes.push(attribute);
+```
+
+This modifies the existing array without creating a new reference.
+
+**Immutable approach – Used in this task:**
+
+```typescript
+this.updateState({
+  attributes: [...this.snapshot.attributes, attribute]
+});
+```
+
+This creates a new array containing the existing attributes and the newly added attribute.
+
+##### Benefits of Immutability
+
+1. **Reliable change detection:** New object and array references make state changes easier for Angular and other reactive consumers to detect.
+2. **Works correctly with distinctUntilChanged:** Reference-based comparisons can detect a new array or object. Mutating an existing reference may cause an update to be suppressed.
+3. **Predictable state:** Previous state is not unexpectedly modified when a new state is created.
+4. **Easier debugging:** State changes are easier to trace because each update produces a new state reference.
+5. **Better maintainability:** Components and services can reason about state changes without worrying about unexpected mutations elsewhere.
+
+##### What Can Break If We Mutate State?
+
+If an existing array or object is modified directly:
+
+- Subscribers using reference-based comparisons may not receive the expected notification.
+- Components relying on reference changes may not update as expected.
+- Previously stored references may unexpectedly reflect modified data.
+- Debugging becomes harder because the original state has already been changed.
+
+For example, using `push()` on the existing attributes array retains the same array reference. If an observable uses `distinctUntilChanged()`, it may consider the new emission unchanged and suppress it.
+
+**Important:** Angular does not universally require immutable state updates. However, immutability makes reactive state management more predictable and works particularly well with reference-based change detection and RxJS operators.
+
+#### 8. Final Application Data Flow
+
+The centralized state approach follows this flow:
+
+```text
+       Component
+           |
+           | Calls service method
+           v
+    AttributeService
+           |
+           | HTTP Request
+           v
+       Backend API
+           |
+           | API Response
+           v
+    AttributeService
+           |
+           | Updates StoreService
+           v
+      StoreService
+      (BehaviorSubject)
+           |
+           | Emits updated state
+           v
+     Observable Slices
+           |
+           | AsyncPipe
+           v
+       Component UI
+```
+
+Authentication follows a similar approach:
+
+```text
+    Login Component
+           |
+           v
+       AuthService
+           |
+           v
+      StoreService
+           |
+           v
+   isAuthenticated$
+           |
+           v
+      Route Guard
+```
+
+#### 9. Conclusion
+
+Task 13 introduced centralized state management using `BehaviorSubject`.
+
+The application now has a single store for shared attribute data, lookup information, loading status, and authentication status.
+
+`AttributeService` and `AuthService` update the centralized store, while components consume the required state through observable slices and Angular's `AsyncPipe`.
+
+All state updates follow an immutable approach using the spread operator, `map()`, and `filter()`.
+
+This implementation reduces duplicated state across components, improves consistency, and provides a foundation for more advanced state management solutions such as NgRx.
