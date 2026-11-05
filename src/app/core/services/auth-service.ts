@@ -1,11 +1,10 @@
-
 import { Injectable, inject } from '@angular/core';
 
 import { StoreService, UserRole } from './store';
 import { IdleService } from './idle-service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly store = inject(StoreService);
@@ -27,23 +26,21 @@ export class AuthService {
     return this.currentRole === 'Admin';
   }
 
-  login(
-    username: string,
-    password: string,
-    role: UserRole
-  ): boolean {
-    if (
-      !username.trim() ||
-      !password.trim() ||
-      (role !== 'Admin' && role !== 'Viewer')
-    ) {
+  readonly username$ = this.store.username$;
+
+  get username(): string | null {
+    return this.store.username;
+  }
+
+  login(username: string, password: string, role: UserRole): boolean {
+    if (!username.trim() || !password.trim() || (role !== 'Admin' && role !== 'Viewer')) {
       return false;
     }
 
+    this.store.setUsername(username.trim());
     this.store.setRole(role);
     this.store.setAuthenticated(true);
 
-    // Start monitoring inactivity after successful login.
     this.idleService.startWatching();
 
     return true;

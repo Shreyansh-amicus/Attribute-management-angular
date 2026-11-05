@@ -1,0 +1,48 @@
+
+@if (username$ | async; as username) {
+  <div class="flex items-center gap-4">
+
+    <!-- User information -->
+    <div class="flex items-center gap-3">
+
+      <!-- User avatar -->
+      <div
+        class="flex h-10 w-10 items-center justify-center
+               rounded-full bg-gray-100 text-gray-700"
+      >
+        <span class="text-sm font-bold">
+          {{ username.charAt(0).toUpperCase() }}
+        </span>
+      </div>
+
+      <!-- Username and role -->
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold text-gray-800">
+          {{ username }}
+        </span>
+
+        @if (role$ | async; as role) {
+          <span
+            class="mt-1 w-fit"
+            [appRoleBadge]="role"
+          >
+            {{ role }}
+          </span>
+        }
+      </div>
+
+    </div>
+
+    <!-- Logout button -->
+    <button
+      type="button"
+      (click)="onLogout()"
+      class="flex items-center gap-2 rounded-lg border
+             border-gray-300 px-3 py-2 text-sm font-medium
+             text-gray-700 transition hover:bg-gray-100"
+    >
+      <span>Logout</span>
+    </button>
+
+  </div>
+}

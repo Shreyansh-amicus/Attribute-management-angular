@@ -20,6 +20,7 @@ export interface AppState {
   isLoading: boolean;
   isAuthenticated: boolean;
   role: UserRole;
+  username: string | null;
 }
 
 export type UserRole = 'Admin' | 'Viewer' | null;
@@ -35,6 +36,7 @@ const initialState: AppState = {
   isLoading: false,
   isAuthenticated: false,
   role: null,
+  username: null,
 };
 
 @Injectable({
@@ -61,6 +63,19 @@ export class StoreService {
     map((role) => role === 'Viewer'),
     distinctUntilChanged(),
   );
+
+  setUsername(username: string | null): void {
+    this.updateState({ username });
+  }
+
+  readonly username$ = this.state$.pipe(
+    map((state) => state.username),
+    distinctUntilChanged(),
+  );
+
+  get username(): string | null {
+    return this.stateSubject.value.username;
+  }
 
   // Expose individual state slices.
   readonly attributes$ = this.state$.pipe(
@@ -160,6 +175,7 @@ export class StoreService {
     this.updateState({
       isAuthenticated,
       role: isAuthenticated ? this.snapshot.role : null,
+      username: isAuthenticated ? this.snapshot.username : null,
     });
   }
 }

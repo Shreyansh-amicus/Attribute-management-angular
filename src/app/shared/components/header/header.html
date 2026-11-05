@@ -1,0 +1,18 @@
+
+<header
+  class="sticky top-0 z-50 flex items-center justify-between
+         border-b border-gray-200 bg-white px-6 py-4 shadow-sm"
+>
+  <!-- Application branding -->
+  <a
+    routerLink="/attributes"
+    class="text-xl font-bold tracking-tight text-gray-800"
+  >
+    Attribute Management
+  </a>
+
+  <!-- User profile -->
+  @if (isAuthenticated$ | async) {
+    <app-user-profile />
+  }
+</header>
