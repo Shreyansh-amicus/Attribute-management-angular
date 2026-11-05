@@ -148,6 +148,28 @@
       "created_by": "Admin",
       "updated_on": "2026-11-03T14:29:04.372Z",
       "updated_by": "Admin"
+    },
+    {
+      "attribute_name": "Adding new attribute as Admin",
+      "business_unit_name": "Marketing",
+      "company_name": "Acme Corp",
+      "customer_location_name": "Singapore",
+      "is_active": true,
+      "created_on": "2026-11-05T08:46:59.812Z",
+      "created_by": "Admin",
+      "attribute_id": 115
+    },
+    {
+      "attribute_id": 116,
+      "attribute_name": "Testing via Admin role edited",
+      "business_unit_name": "Marketing",
+      "company_name": "Globex Industries",
+      "customer_location_name": "Sydney, Australia",
+      "is_active": false,
+      "created_on": "2026-11-05T08:52:15.917Z",
+      "created_by": "Admin",
+      "updated_on": "2026-11-05T08:52:38.501Z",
+      "updated_by": "Admin"
     }
   ],
   "businessUnits": [

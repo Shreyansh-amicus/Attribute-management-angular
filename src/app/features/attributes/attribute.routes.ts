@@ -6,26 +6,34 @@ import { AttributeList } from './components/attribute-list/attribute-list';
 import { authGuard } from '../../core/guards/auth.guard';
 import { attributeResolver } from '../../core/resolvers/attribute-resolver';
 import { SubjectDemo } from './components/subject-demo/subject-demo';
+import { roleGuard } from '../../core/guards/role.guard';
 
 export const ATTRIBUTE_ROUTES: Routes = [
    {
     path: '',
     component: AttributeList,
     pathMatch: 'full',
-    title: 'Attribute List'
+    title: 'Attribute List',
+    canActivate : [authGuard]
   },
   {
     path: 'add',
     component: AddAttributePage,
     title: 'Add Attribute',
-    canActivate: [authGuard]
+    canActivate: [authGuard, roleGuard],
+    data:{
+      role: 'Admin'
+    }
   },
   {
     path: ':id/edit',
     component: EditAttribute,
     canDeactivate: [unsavedChangesGuard],
     title: 'Edit Attribute',
-    canActivate : [authGuard],
+    canActivate : [authGuard, roleGuard],
+    data:{
+      role : 'Admin'
+    },
     resolve:{
       attribute : attributeResolver
     }

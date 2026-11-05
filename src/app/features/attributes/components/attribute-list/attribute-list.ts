@@ -45,6 +45,7 @@ export class AttributeList {
   // Read application state from the centralized store.
   readonly attributes$ = this.store.attributes$;
   readonly isLoading$ = this.store.isLoading$;
+  readonly isAdmin$ = this.store.isAdmin$;
 
   searchControl = new FormControl('', {
     nonNullable: true,

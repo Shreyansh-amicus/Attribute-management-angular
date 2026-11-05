@@ -12,6 +12,7 @@ import { RouterLink } from '@angular/router';
 })
 export class AttributeCard {
   @Input({required : true}) attribute !: IAttributeModel;
+  @Input() canManage = false;
 
   ngOnInit(): void {
     console.log("ngOnInit() hook fired for ",this.attribute.AttributeId);

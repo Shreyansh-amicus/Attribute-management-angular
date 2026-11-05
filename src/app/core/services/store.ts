@@ -19,20 +19,22 @@ export interface AppState {
   lookups: AttributeLookups;
   isLoading: boolean;
   isAuthenticated: boolean;
+  role: UserRole;
 }
+
+export type UserRole = 'Admin' | 'Viewer' | null;
 
 // Initial application state.
 const initialState: AppState = {
   attributes: [],
-
   lookups: {
     businessUnits: [],
     companies: [],
     customerLocations: [],
   },
-
   isLoading: false,
   isAuthenticated: false,
+  role: null,
 };
 
 @Injectable({
@@ -44,6 +46,21 @@ export class StoreService {
 
   // Public read-only observable.
   readonly state$ = this.stateSubject.asObservable();
+
+  readonly role$ = this.state$.pipe(
+    map((state) => state.role),
+    distinctUntilChanged(),
+  );
+
+  readonly isAdmin$ = this.role$.pipe(
+    map((role) => role === 'Admin'),
+    distinctUntilChanged(),
+  );
+
+  readonly isViewer$ = this.role$.pipe(
+    map((role) => role === 'Viewer'),
+    distinctUntilChanged(),
+  );
 
   // Expose individual state slices.
   readonly attributes$ = this.state$.pipe(
@@ -65,6 +82,14 @@ export class StoreService {
     map((state) => state.isAuthenticated),
     distinctUntilChanged(),
   );
+
+  get role(): UserRole {
+    return this.stateSubject.value.role;
+  }
+
+  setRole(role: UserRole): void {
+    this.updateState({ role });
+  }
 
   // Returns the current state synchronously.
   get snapshot(): AppState {
@@ -132,7 +157,9 @@ export class StoreService {
   }
 
   setAuthenticated(isAuthenticated: boolean): void {
-    this.updateState({ isAuthenticated });
-    distinctUntilChanged()
+    this.updateState({
+      isAuthenticated,
+      role: isAuthenticated ? this.snapshot.role : null,
+    });
   }
 }

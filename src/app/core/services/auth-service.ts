@@ -1,33 +1,56 @@
 
 import { Injectable, inject } from '@angular/core';
-import { StoreService } from './store';
+
+import { StoreService, UserRole } from './store';
+import { IdleService } from './idle-service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
   private readonly store = inject(StoreService);
+  private readonly idleService = inject(IdleService);
 
-  // Components can observe authentication state.
   readonly isAuthenticated$ = this.store.isAuthenticated$;
+  readonly role$ = this.store.role$;
+  readonly isAdmin$ = this.store.isAdmin$;
 
-  // Keep this getter for synchronous route guard checks.
   get isAuthenticated(): boolean {
     return this.store.snapshot.isAuthenticated;
   }
 
-  login(username: string, password: string): boolean {
-    if (!username.trim() || !password.trim()) {
+  get currentRole(): UserRole {
+    return this.store.snapshot.role;
+  }
+
+  get isAdmin(): boolean {
+    return this.currentRole === 'Admin';
+  }
+
+  login(
+    username: string,
+    password: string,
+    role: UserRole
+  ): boolean {
+    if (
+      !username.trim() ||
+      !password.trim() ||
+      (role !== 'Admin' && role !== 'Viewer')
+    ) {
       return false;
     }
 
-    // Demo authentication only.
+    this.store.setRole(role);
     this.store.setAuthenticated(true);
+
+    // Start monitoring inactivity after successful login.
+    this.idleService.startWatching();
 
     return true;
   }
 
   logout(): void {
+    this.idleService.stopWatching();
     this.store.setAuthenticated(false);
   }
 }
