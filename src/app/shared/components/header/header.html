@@ -1,15 +1,42 @@
-
 <header
   class="sticky top-0 z-50 flex items-center justify-between
          border-b border-gray-200 bg-white px-6 py-4 shadow-sm"
 >
-  <!-- Application branding -->
-  <a
-    routerLink="/attributes"
-    class="text-xl font-bold tracking-tight text-gray-800"
-  >
-    Attribute Management
-  </a>
+  <!-- Application branding and navigation -->
+  <div class="flex items-center gap-10">
+    <a
+      routerLink="/attributes"
+      class="text-xl font-bold tracking-tight text-gray-800"
+    >
+      Attribute Management
+    </a>
+
+    @if (isAuthenticated$ | async) {
+      <nav class="flex items-center gap-2">
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="bg-blue-50 text-blue-700"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="rounded-lg px-4 py-2 text-sm font-medium
+                 text-gray-600 transition hover:bg-gray-100
+                 hover:text-gray-900"
+        >
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/attributes"
+          routerLinkActive="bg-blue-50 text-blue-700"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="rounded-lg px-4 py-2 text-sm font-medium
+                 text-gray-600 transition hover:bg-gray-100
+                 hover:text-gray-900"
+        >
+          Attributes
+        </a>
+      </nav>
+    }
+  </div>
 
   <!-- User profile -->
   @if (isAuthenticated$ | async) {

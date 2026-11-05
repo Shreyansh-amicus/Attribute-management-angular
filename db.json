@@ -170,6 +170,92 @@
       "created_by": "Admin",
       "updated_on": "2026-11-05T08:52:38.501Z",
       "updated_by": "Admin"
+    },
+    {
+      "attribute_name": "Dashboard metric",
+      "business_unit_name": "Marketing",
+      "company_name": "Initech Software",
+      "customer_location_name": "Sydney, Australia",
+      "is_active": false,
+      "created_on": "2026-11-05T12:11:44.656Z",
+      "created_by": "Admin",
+      "attribute_id": 117
+    },
+    {
+      "attribute_name": "Dashboard testing",
+      "business_unit_name": "Operations",
+      "company_name": "Initech Software",
+      "customer_location_name": "Bengaluru, India",
+      "is_active": true,
+      "created_on": "2026-11-05T12:19:47.417Z",
+      "created_by": "Admin",
+      "attribute_id": 118
+    },
+    {
+      "attribute_name": "test123",
+      "business_unit_name": "Operations",
+      "company_name": "Globex Industries",
+      "customer_location_name": "Chennai, India",
+      "is_active": true,
+      "created_on": "2026-11-05T12:20:22.725Z",
+      "created_by": "Admin",
+      "attribute_id": 119
+    },
+    {
+      "attribute_name": "Hello",
+      "business_unit_name": "Marketing",
+      "company_name": "Acme Corp",
+      "customer_location_name": "Sydney, Australia",
+      "is_active": true,
+      "created_on": "2026-11-05T12:31:39.998Z",
+      "created_by": "Admin",
+      "attribute_id": 120
+    },
+    {
+      "attribute_name": "Activity log testing",
+      "business_unit_name": "Supply Chain",
+      "company_name": "Initech Software",
+      "customer_location_name": "Hyderabad, India",
+      "is_active": true,
+      "created_on": "2026-11-05T13:58:33.478Z",
+      "created_by": "Admin",
+      "attribute_id": 121
+    },
+    {
+      "attribute_id": 122,
+      "attribute_name": "Mic testing 123",
+      "business_unit_name": "Supply Chain",
+      "company_name": "Globex Industries",
+      "customer_location_name": "Hyderabad, India",
+      "is_active": true,
+      "created_on": "2026-11-05T14:02:26.909Z",
+      "created_by": "Admin",
+      "updated_on": "2026-11-05T14:12:49.462Z",
+      "updated_by": "Admin"
+    },
+    {
+      "attribute_id": 123,
+      "attribute_name": "12345 ediited",
+      "business_unit_name": "Marketing",
+      "company_name": "Globex Industries",
+      "customer_location_name": "Sydney, Australia",
+      "is_active": true,
+      "created_on": "2026-11-05T14:14:34.626Z",
+      "created_by": "Admin",
+      "updated_on": "2026-11-05T14:29:26.247Z",
+      "updated_by": "Admin"
+    },
+    {
+      "attribute_id": 124,
+      "attribute_name": "test21345",
+      "business_unit_name": "Human Resources",
+      "company_name": "Acme Corp",
+      "customer_location_name": "Berlin, Germany",
+      "is_active": false,
+      "created_on": "2026-11-05T14:30:28.190Z",
+      "created_by": "Admin",
+      "updated_on": "2026-11-05T14:30:40.533Z",
+      "updated_by": "Admin"
     }
   ],
   "businessUnits": [
@@ -258,6 +344,39 @@
       "CustomerLocationId": 10,
       "CustomerLocationName": "Hyderabad, India",
       "BusinessUnitId": 5
+    }
+  ],
+  "activityLogs": [
+    {
+      "action": "CREATE",
+      "attribute_id": 123,
+      "attribute_name": "12345",
+      "performed_by": "Random",
+      "timestamp": "2026-11-05T14:14:34.667Z"
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 123,
+      "attribute_name": "12345 ediited",
+      "performed_by": "Random",
+      "timestamp": "2026-11-05T14:29:26.292Z",
+      "attribute_id": 124
+    },
+    {
+      "action": "CREATE",
+      "related_attribute_id": 124,
+      "attribute_name": "test21345",
+      "performed_by": "Random",
+      "timestamp": "2026-11-05T14:30:28.212Z",
+      "attribute_id": 125
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 124,
+      "attribute_name": "test21345",
+      "performed_by": "Random",
+      "timestamp": "2026-11-05T14:30:40.561Z",
+      "attribute_id": 126
     }
   ]
 }

@@ -1,7 +1,6 @@
-
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth-service';
 import { UserProfile } from '../user-profile/user-profile';
@@ -12,6 +11,7 @@ import { UserProfile } from '../user-profile/user-profile';
   imports: [
     AsyncPipe,
     RouterLink,
+    RouterLinkActive,
     UserProfile
   ],
   templateUrl: './header.html'
