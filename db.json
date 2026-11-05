@@ -139,14 +139,14 @@
     },
     {
       "attribute_id": 114,
-      "attribute_name": "Testing via add attribute",
-      "business_unit_name": "Marketing",
-      "company_name": "Initech Software",
-      "customer_location_name": "Singapore",
-      "is_active": false,
+      "attribute_name": "Testing via add attribute edited",
+      "business_unit_name": "Finance",
+      "company_name": "Globex Industries",
+      "customer_location_name": "Mumbai, India",
+      "is_active": true,
       "created_on": "2026-11-03T11:46:38.668Z",
       "created_by": "Admin",
-      "updated_on": "2026-11-03T12:13:48.113Z",
+      "updated_on": "2026-11-03T14:29:04.372Z",
       "updated_by": "Admin"
     }
   ],
