@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Observable, map, tap, finalize, concatMap, catchError, of } from 'rxjs';
 
@@ -182,5 +182,33 @@ export class AttributeService {
         return of(undefined);
       }),
     );
+  }
+
+  getAttributesPage(request: AttributePageRequest): Observable<AttributePageResult> {
+    let params = new HttpParams()
+      .set('_page', request.page)
+      .set('_limit', request.pageSize)
+      .set('_sort', request.sortBy)
+      .set('_order', request.sortDirection);
+
+    if (request.searchTerm) {
+      params = params.set('q', request.searchTerm);
+    }
+
+    return this.http
+      .get<AttributeDTO[]>(this.apiUrl, {
+        params,
+        observe: 'response',
+      })
+      .pipe(
+        map((response) => {
+          const dtos = response.body ?? [];
+
+          return {
+            items: dtos.map((dto) => this.mapper.toAttribute(dto)),
+            totalCount: Number(response.headers.get('X-Total-Count') ?? dtos.length),
+          };
+        }),
+      );
   }
 }

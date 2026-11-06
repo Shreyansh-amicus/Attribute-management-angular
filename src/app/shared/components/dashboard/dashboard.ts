@@ -1,19 +1,18 @@
-
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 import { combineLatest, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import {
-  ActivityLogService,
-} from '../../../core/services/activity-log-service';
-
+import { ActivityLogService } from '../../../core/services/activity-log-service';
 import { StoreService } from '../../../core/services/store';
 import { AttributeService } from '../../../core/services/attribute-service';
 
 import { IAttributeModel } from '../../models/IAttribute.model';
 import { ActivityLogModel } from '../../models/activity-log-model';
+
+import { CardWrapper } from '../card-wrapper/card-wrapper';
+import { CollapsibleSectionComponent } from '../collapsible-section/collapsible-section';
 
 interface BusinessUnitChartItem {
   name: string;
@@ -24,24 +23,32 @@ interface BusinessUnitChartItem {
   height: number;
 }
 
+interface ChartTick {
+  value: number;
+  y: number;
+}
+
 interface DashboardViewModel {
   totalAttributes: number;
   activeAttributes: number;
   inactiveAttributes: number;
   createdThisMonth: number;
   chartItems: BusinessUnitChartItem[];
-  chartMax: number;
-  chartTicks: {
-    value: number;
-    y: number;
-  }[];
+  chartWidth: number;
+  chartHeight: number;
+  chartTicks: ChartTick[];
   activities: ActivityLogModel[];
 }
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [AsyncPipe, DatePipe],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    CardWrapper,
+    CollapsibleSectionComponent,
+  ],
   templateUrl: './dashboard.html',
 })
 export class Dashboard implements OnInit {
@@ -50,21 +57,24 @@ export class Dashboard implements OnInit {
   private readonly attributeService = inject(AttributeService);
   private readonly destroyRef = inject(DestroyRef);
 
-  private readonly chartWidth = 700;
-  private readonly chartHeight = 280;
+  // Chart dimensions.
+  private readonly minimumChartWidth = 700;
+  private readonly chartHeight = 330;
 
-  // Combine attribute state and recent activity state.
+  // SVG plotting area.
+  private readonly leftPadding = 55;
+  private readonly rightPadding = 25;
+  private readonly topPadding = 25;
+  private readonly bottomPadding = 110;
+
   readonly dashboard$ = combineLatest({
     attributes: this.store.attributes$,
     activities: this.activityLog.activities$,
   }).pipe(
-    map(({ attributes, activities }) => {
+    map(({ attributes, activities }): DashboardViewModel => {
       const now = new Date();
 
-      // --------------------------------
-      // Summary Cards
-      // --------------------------------
-
+      // Summary cards.
       const totalAttributes = attributes.length;
 
       const activeAttributes = attributes.filter(
@@ -78,23 +88,21 @@ export class Dashboard implements OnInit {
         const createdDate = new Date(attribute.CreatedOn);
 
         return (
+          !Number.isNaN(createdDate.getTime()) &&
           createdDate.getMonth() === now.getMonth() &&
           createdDate.getFullYear() === now.getFullYear()
         );
       }).length;
 
-      // --------------------------------
-      // Business Unit Chart
-      // --------------------------------
-
-      const chartItems = this.buildChart(attributes);
+      // Business unit chart.
+      const chartData = this.buildChart(attributes);
 
       const chartMax = Math.max(
         1,
-        ...chartItems.map((item) => item.count)
+        ...chartData.items.map((item) => item.count)
       );
 
-      const chartTicks = [
+      const chartTicks: ChartTick[] = [
         0,
         Math.ceil(chartMax / 2),
         chartMax,
@@ -105,34 +113,34 @@ export class Dashboard implements OnInit {
         )
         .map((value) => ({
           value,
-          y: 215 - (value / chartMax) * 195,
+          y:
+            chartData.baseline -
+            (value / chartMax) * chartData.plotHeight,
         }));
-
-      // --------------------------------
-      // Dashboard View Model
-      // --------------------------------
 
       return {
         totalAttributes,
         activeAttributes,
         inactiveAttributes,
         createdThisMonth,
-        chartItems,
-        chartMax,
+        chartItems: chartData.items,
+        chartWidth: chartData.width,
+        chartHeight: this.chartHeight,
         chartTicks,
-
-        // API already returns newest activities first.
         activities,
-      } satisfies DashboardViewModel;
+      };
     })
   );
 
   ngOnInit(): void {
-    // Fetch attributes and update StoreService.
+    // Load all attributes into the centralized store.
     this.attributeService
       .getAttributes()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
+        next: (attributes) => {
+          this.store.setAttributes(attributes);
+        },
         error: (error) => {
           console.error(
             'Unable to load dashboard attributes:',
@@ -141,7 +149,7 @@ export class Dashboard implements OnInit {
         },
       });
 
-    // Fetch the latest 10 activity records.
+    // Load the latest 10 activity records.
     this.activityLog
       .loadRecentActivities()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -155,16 +163,15 @@ export class Dashboard implements OnInit {
       });
   }
 
-  // --------------------------------
-  // Build Business Unit Chart Data
-  // --------------------------------
-
-  private buildChart(
-    attributes: IAttributeModel[]
-  ): BusinessUnitChartItem[] {
+  private buildChart(attributes: IAttributeModel[]): {
+    items: BusinessUnitChartItem[];
+    width: number;
+    baseline: number;
+    plotHeight: number;
+  } {
     const counts = new Map<string, number>();
 
-    // Count attributes belonging to each business unit.
+    // Count attributes per business unit.
     for (const attribute of attributes) {
       const businessUnit =
         attribute.BusinessUnitName?.trim() || 'Unassigned';
@@ -180,47 +187,67 @@ export class Dashboard implements OnInit {
       (a, b) => a[0].localeCompare(b[0])
     );
 
-    // SVG chart dimensions.
-    const leftPadding = 55;
-    const rightPadding = 20;
-    const topPadding = 20;
-    const bottomPadding = 65;
+    /*
+     * Give every business unit a minimum horizontal slot.
+     * This prevents bars and labels from becoming crowded.
+     */
+    const slotMinimumWidth = 120;
+
+    const calculatedWidth =
+      this.leftPadding +
+      this.rightPadding +
+      entries.length * slotMinimumWidth;
+
+    const chartWidth = Math.max(
+      this.minimumChartWidth,
+      calculatedWidth
+    );
 
     const plotWidth =
-      this.chartWidth - leftPadding - rightPadding;
+      chartWidth - this.leftPadding - this.rightPadding;
 
     const plotHeight =
-      this.chartHeight - topPadding - bottomPadding;
+      this.chartHeight -
+      this.topPadding -
+      this.bottomPadding;
 
-    // Determine maximum bar height.
+    const baseline = this.topPadding + plotHeight;
+
     const maxCount = Math.max(
       1,
       ...entries.map(([, count]) => count)
     );
 
-    // Calculate available width for each business unit.
     const slotWidth =
       entries.length > 0
         ? plotWidth / entries.length
         : plotWidth;
 
-    const barWidth = Math.min(45, slotWidth * 0.6);
+    const barWidth = Math.min(48, slotWidth * 0.55);
 
-    // Calculate SVG coordinates for every bar.
-    return entries.map(([name, count], index) => {
+    const items = entries.map(([name, count], index) => {
       const height = (count / maxCount) * plotHeight;
+
+      const x =
+        this.leftPadding +
+        index * slotWidth +
+        (slotWidth - barWidth) / 2;
 
       return {
         name,
         count,
-        x:
-          leftPadding +
-          index * slotWidth +
-          (slotWidth - barWidth) / 2,
-        y: topPadding + plotHeight - height,
+        x,
+        y: baseline - height,
         width: barWidth,
         height,
       };
     });
+
+    return {
+      items,
+      width: chartWidth,
+      baseline,
+      plotHeight,
+    };
   }
 }

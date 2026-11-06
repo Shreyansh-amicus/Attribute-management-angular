@@ -1,25 +1,16 @@
 {
   "attributes": [
     {
-      "attribute_id": 101,
-      "attribute_name": "Cost Center Code",
-      "business_unit_name": "Finance",
-      "company_name": "Acme Corp",
-      "customer_location_name": "New York, USA",
-      "is_active": true,
-      "created_on": "2025-01-15T08:30:00.000Z",
-      "created_by": "Sarah Jenkins",
-      "updated_on": "2025-06-20T10:15:00.000Z",
-      "updated_by": "System Admin"
-    },
-    {
       "attribute_id": 102,
-      "attribute_name": "Employee Onboarding Status",
+      "attribute_name": "Employee Onboarding Status edited",
       "business_unit_name": "Human Resources",
       "company_name": "Globex Industries",
-      "is_active": true,
+      "customer_location_name": "London, UK",
+      "is_active": false,
       "created_on": "2025-03-22T14:15:00.000Z",
-      "created_by": "David Chen"
+      "created_by": "David Chen",
+      "updated_on": "2026-11-06T11:15:34.801Z",
+      "updated_by": "Admin"
     },
     {
       "attribute_id": 103,
@@ -118,14 +109,16 @@
       "created_by": "Admin"
     },
     {
-      "attribute_name": "New attribute for testing purposes",
+      "attribute_id": 112,
+      "attribute_name": "New attribute for testing purposes edited",
       "business_unit_name": "Operations",
       "company_name": "Globex Industries",
       "customer_location_name": "Chennai, India",
       "is_active": true,
       "created_on": "2026-11-03T07:32:55.385Z",
       "created_by": "Admin",
-      "attribute_id": 112
+      "updated_on": "2026-11-06T11:13:08.477Z",
+      "updated_by": "Admin"
     },
     {
       "attribute_name": "Demo Testing via AddAttribute",
@@ -192,16 +185,6 @@
       "attribute_id": 118
     },
     {
-      "attribute_name": "test123",
-      "business_unit_name": "Operations",
-      "company_name": "Globex Industries",
-      "customer_location_name": "Chennai, India",
-      "is_active": true,
-      "created_on": "2026-11-05T12:20:22.725Z",
-      "created_by": "Admin",
-      "attribute_id": 119
-    },
-    {
       "attribute_name": "Hello",
       "business_unit_name": "Marketing",
       "company_name": "Acme Corp",
@@ -212,50 +195,26 @@
       "attribute_id": 120
     },
     {
-      "attribute_name": "Activity log testing",
-      "business_unit_name": "Supply Chain",
-      "company_name": "Initech Software",
-      "customer_location_name": "Hyderabad, India",
-      "is_active": true,
-      "created_on": "2026-11-05T13:58:33.478Z",
-      "created_by": "Admin",
-      "attribute_id": 121
-    },
-    {
-      "attribute_id": 122,
-      "attribute_name": "Mic testing 123",
-      "business_unit_name": "Supply Chain",
+      "attribute_id": 121,
+      "attribute_name": "Monitoring",
+      "business_unit_name": "Operations",
       "company_name": "Globex Industries",
-      "customer_location_name": "Hyderabad, India",
-      "is_active": true,
-      "created_on": "2026-11-05T14:02:26.909Z",
+      "customer_location_name": "Bengaluru, India",
+      "is_active": false,
+      "created_on": "2026-11-06T11:03:00.312Z",
       "created_by": "Admin",
-      "updated_on": "2026-11-05T14:12:49.462Z",
+      "updated_on": "2026-11-06T11:04:30.506Z",
       "updated_by": "Admin"
     },
     {
-      "attribute_id": 123,
-      "attribute_name": "12345 ediited",
+      "attribute_name": "Redirection test",
       "business_unit_name": "Marketing",
-      "company_name": "Globex Industries",
+      "company_name": "Acme Corp",
       "customer_location_name": "Sydney, Australia",
       "is_active": true,
-      "created_on": "2026-11-05T14:14:34.626Z",
+      "created_on": "2026-11-06T11:11:41.356Z",
       "created_by": "Admin",
-      "updated_on": "2026-11-05T14:29:26.247Z",
-      "updated_by": "Admin"
-    },
-    {
-      "attribute_id": 124,
-      "attribute_name": "test21345",
-      "business_unit_name": "Human Resources",
-      "company_name": "Acme Corp",
-      "customer_location_name": "Berlin, Germany",
-      "is_active": false,
-      "created_on": "2026-11-05T14:30:28.190Z",
-      "created_by": "Admin",
-      "updated_on": "2026-11-05T14:30:40.533Z",
-      "updated_by": "Admin"
+      "attribute_id": 122
     }
   ],
   "businessUnits": [
@@ -377,6 +336,118 @@
       "performed_by": "Random",
       "timestamp": "2026-11-05T14:30:40.561Z",
       "attribute_id": 126
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 101,
+      "attribute_name": "Cost Center Code",
+      "performed_by": "Random",
+      "timestamp": "2026-11-06T07:45:10.595Z",
+      "attribute_id": 127
+    },
+    {
+      "action": "CREATE",
+      "related_attribute_id": 125,
+      "attribute_name": "Anurag testing",
+      "performed_by": "Random",
+      "timestamp": "2026-11-06T08:28:00.712Z",
+      "attribute_id": 128
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 125,
+      "attribute_name": "Anurag testing",
+      "performed_by": "Random",
+      "timestamp": "2026-11-06T08:28:53.654Z",
+      "attribute_id": 129
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 125,
+      "attribute_name": "Anurag testing",
+      "performed_by": "Random",
+      "timestamp": "2026-11-06T08:29:07.248Z",
+      "attribute_id": 130
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 124,
+      "attribute_name": "test21345",
+      "performed_by": "Random",
+      "timestamp": "2026-11-06T08:29:28.645Z",
+      "attribute_id": 131
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 123,
+      "attribute_name": "12345 ediited",
+      "performed_by": "Random",
+      "timestamp": "2026-11-06T08:29:40.485Z",
+      "attribute_id": 132
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 122,
+      "attribute_name": "Mic testing 123",
+      "performed_by": "Random",
+      "timestamp": "2026-11-06T08:30:02.687Z",
+      "attribute_id": 133
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 121,
+      "attribute_name": "Activity log testing",
+      "performed_by": "Random",
+      "timestamp": "2026-11-06T08:30:50.204Z",
+      "attribute_id": 134
+    },
+    {
+      "action": "CREATE",
+      "related_attribute_id": 121,
+      "attribute_name": "Monitoring",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-06T11:03:00.343Z",
+      "attribute_id": 135
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 121,
+      "attribute_name": "Monitoring",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-06T11:04:30.533Z",
+      "attribute_id": 136
+    },
+    {
+      "action": "CREATE",
+      "related_attribute_id": 122,
+      "attribute_name": "Redirection test",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-06T11:11:41.385Z",
+      "attribute_id": 137
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 119,
+      "attribute_name": "test123",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-06T11:11:54.486Z",
+      "attribute_id": 138
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 112,
+      "attribute_name": "New attribute for testing purposes edited",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-06T11:13:08.495Z",
+      "attribute_id": 139
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 102,
+      "attribute_name": "Employee Onboarding Status edited",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-06T11:15:34.821Z",
+      "attribute_id": 140
     }
   ]
 }

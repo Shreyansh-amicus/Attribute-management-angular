@@ -1,28 +1,34 @@
-<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+<div class="mx-auto w-full min-w-0 max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
+
   <!-- Page Header -->
-  <div class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-    <div>
-      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Attribute list</h2>
-      <p class="mt-2 text-sm text-gray-500">View and explore your available attributes.</p>
+  <div class="mb-6 flex min-w-0 flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+
+    <div class="min-w-0">
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
+        Attribute List
+      </h2>
+
+      <p class="mt-2 text-sm text-gray-500">
+        View and explore your available attributes.
+      </p>
     </div>
 
     <!-- Actions -->
-    <div class="flex flex-wrap items-center gap-3">
-      <!-- Add Attribute Button -->
+    <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+
+      <!-- Add Attribute: Admin only -->
       @if (isAdmin$ | async) {
         <a
           routerLink="/attributes/add"
-          class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
-        >
+          class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 sm:w-auto">
           <span class="text-lg leading-none" aria-hidden="true">+</span>
           Add Attribute
         </a>
       }
 
       <!-- View Toggle -->
-      <div
-        class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm"
-      >
+      <div class="flex w-full items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm sm:w-auto">
+
         <span class="text-sm font-medium text-gray-600">
           {{ isTableView ? 'Table view' : 'Card view' }}
         </span>
@@ -35,228 +41,128 @@
           (click)="onClick()"
           class="relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
           [class.bg-blue-600]="isTableView"
-          [class.bg-violet-600]="!isTableView"
-        >
+          [class.bg-violet-600]="!isTableView">
+
           <span
             class="pointer-events-none inline-flex h-6 w-6 transform items-center justify-center rounded-full bg-white shadow-md ring-1 ring-black/5 transition-transform duration-300 ease-in-out"
             [class.translate-x-1]="isTableView"
-            [class.translate-x-7]="!isTableView"
-          >
+            [class.translate-x-7]="!isTableView">
+
             <span class="text-[10px] font-bold text-gray-600">
               {{ isTableView ? 'T' : 'C' }}
             </span>
+
           </span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Search Box -->
-  <div class="mb-6">
+  <!-- Search -->
+  <div class="mb-6 w-full min-w-0">
+
     <label for="attributeSearch" class="mb-2 block text-sm font-semibold text-gray-700">
       Search attributes
     </label>
 
-    <div class="relative max-w-xl">
+    <div class="w-full max-w-xl">
       <input
         id="attributeSearch"
         type="search"
         [formControl]="searchControl"
         placeholder="Search by attribute name or business unit..."
-        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-      />
+        class="w-full min-w-0 rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" />
     </div>
 
-    <p class="mt-2 text-xs text-gray-500">Search matches attributes returned by the API.</p>
+    <p class="mt-2 text-xs text-gray-500">
+      Search matches attributes returned by the API.
+    </p>
 
-    <!-- Searching Indicator -->
     @if (isSearching) {
-      <p class="mt-2 text-sm font-medium text-blue-600" role="status">Searching...</p>
+      <p class="mt-2 text-sm font-medium text-blue-600" role="status">
+        Searching...
+      </p>
     }
   </div>
 
-  <!-- Initial API Loading State -->
-  @if (isLoading$ | async) {
-    <div class="rounded-xl border border-gray-200 bg-white p-8 text-center">
-      <p class="text-sm font-medium text-gray-600">Loading attributes...</p>
-    </div>
-  }
-
-  <!-- API Error State -->
-  @else if (errorMessage) {
-    <div class="rounded-xl border border-red-200 bg-red-50 p-8 text-center" role="alert">
-      <p class="font-semibold text-red-700">
+  <!-- Error State -->
+  @if (errorMessage) {
+    <div class="rounded-xl border border-red-200 bg-red-50 p-5 sm:p-8" role="alert">
+      <p class="text-sm font-semibold text-red-700">
         {{ errorMessage }}
       </p>
     </div>
   }
 
-  <!-- Attributes from Store -->
-  @else if (attributes$ | async; as attributes) {
-    <!-- Empty State -->
-    @if (attributes.length === 0 && isSearching) {
-      <div class="rounded-xl border border-gray-200 bg-white p-8 text-center">
-        <p class="text-sm font-medium text-gray-600">Loading attributes...</p>
-      </div>
-    } @else if (attributes.length === 0) {
-      <div class="rounded-xl border border-gray-200 bg-white p-8 text-center">
-        <p class="text-sm text-gray-500">No attributes found.</p>
-      </div>
-    } @else {
+  <!-- Loading State -->
+  @else if (tableLoading) {
+    <div class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+      <p class="text-sm font-medium text-gray-600">
+        Loading attributes...
+      </p>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @else if (tableAttributes.length === 0) {
+    <div class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm sm:p-12">
+      <p class="text-sm font-medium text-gray-600">
+        No attributes found.
+      </p>
+
+      <p class="mt-1 text-xs text-gray-400">
+        Try changing your search term.
+      </p>
+    </div>
+  }
+
+  <!-- Data View -->
+  @else {
+    @if (isTableView) {
       <!-- Table View -->
-      @if (isTableView) {
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 text-left text-sm">
-              <!-- Table Header -->
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                  >
-                    ID
-                  </th>
+      <div class="w-full min-w-0 overflow-x-auto">
+        <app-data-table
+          [rows]="tableAttributes"
+          [columns]="tableColumns"
+          [page]="tableQuerySubject.value.page"
+          [pageSize]="tableQuerySubject.value.pageSize"
+          [totalItems]="totalTableItems"
+          [sortBy]="tableQuerySubject.value.sortBy"
+          [sortDirection]="tableQuerySubject.value.sortDirection"
+          [canManage]="(isAdmin$ | async) === true"
+          (sortChange)="onTableSortChange($event)"
+          (pageChange)="onTablePageChange($event)"
+          (edit)="onEditAttribute($event)"
+          (delete)="requestDelete($event)" />
+      </div>
+    }
 
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                  >
-                    Name
-                  </th>
-
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                  >
-                    Business Unit
-                  </th>
-
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                  >
-                    Company
-                  </th>
-
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                  >
-                    Customer Location
-                  </th>
-
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                  >
-                    Status
-                  </th>
-
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                  >
-                    Created On
-                  </th>
-
-                  <th
-                    scope="col"
-                    class="whitespace-nowrap px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500"
-                  >
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-
-              <!-- Table Body -->
-              <tbody class="divide-y divide-gray-100 text-gray-600">
-                @for (attr of attributes; track attr.AttributeId) {
-                  <tr class="transition-colors duration-150 hover:bg-blue-50/40">
-                    <!-- ID -->
-                    <td class="whitespace-nowrap px-6 py-4">
-                      <span
-                        class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs font-medium text-gray-500"
-                      >
-                        #{{ attr.AttributeId }}
-                      </span>
-                    </td>
-
-                    <!-- Name -->
-                    <td class="whitespace-nowrap px-6 py-4 font-semibold text-gray-900">
-                      {{ attr.AttributeName }}
-                    </td>
-
-                    <!-- Business Unit -->
-                    <td class="whitespace-nowrap px-6 py-4 text-gray-700">
-                      {{ attr.BusinessUnitName }}
-                    </td>
-
-                    <!-- Company -->
-                    <td class="whitespace-nowrap px-6 py-4">
-                      <span
-                        [class.text-gray-400]="!attr.CompanyName"
-                        [class.text-gray-700]="!!attr.CompanyName"
-                      >
-                        {{ attr.CompanyName || 'No company' }}
-                      </span>
-                    </td>
-
-                    <!-- Customer Location -->
-                    <td class="whitespace-nowrap px-6 py-4">
-                      <span
-                        [class.text-gray-400]="!attr.CustomerLocationName"
-                        [class.text-gray-700]="!!attr.CustomerLocationName"
-                      >
-                        {{ attr.CustomerLocationName || 'Global' }}
-                      </span>
-                    </td>
-
-                    <!-- Status -->
-                    <td class="whitespace-nowrap px-6 py-4">
-                      <span
-                        appActiveStatus
-                        [isActive]="attr.IsActive"
-                        [createdOn]="attr.CreatedOn"
-                        [updatedOn]="attr.UpdatedOn ?? null"
-                      >
-                        {{ attr.IsActive ? 'Active' : 'Inactive' }}
-                      </span>
-                    </td>
-
-                    <!-- Created On -->
-                    <td class="whitespace-nowrap px-6 py-4 text-gray-500">
-                      {{ attr.CreatedOn | relativeTime }}
-                    </td>
-
-                    <!-- Edit Action -->
-                    @if (isAdmin$ | async) {
-                      <td class="whitespace-nowrap px-6 py-4 text-right">
-                        <a
-                          [routerLink]="['/attributes', attr.AttributeId, 'edit']"
-                          [attr.aria-label]="'Edit ' + attr.AttributeName"
-                          class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
-                        >
-                          Edit
-                        </a>
-                      </td>
-                    }
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        </div>
-      }
-
+    @else {
       <!-- Card View -->
-      @else {
-        <div class="grid grid-cols-1 items-stretch gap-5 py-2 sm:grid-cols-2 xl:grid-cols-3">
-          @for (attr of attributes; track attr.AttributeId) {
-            <app-attribute-card [attribute]="attr" [canManage] = "(isAdmin$ | async) === true"/>
-          }
-        </div>
-      }
+      <div class="grid min-w-0 grid-cols-1 items-stretch gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
+
+        @for (attr of tableAttributes; track attr.AttributeId) {
+          <app-attribute-card
+            [attribute]="attr"
+            [canManage]="(isAdmin$ | async) === true" />
+        }
+
+      </div>
     }
   }
+
+  <!-- Delete Confirmation Dialog -->
+  <app-confirm-dialog
+    [isOpen]="isConfirmDialogOpen"
+    title="Delete Attribute"
+    [message]="
+      'Are you sure you want to delete ' +
+      (selectedAttributeForDelete?.AttributeName ?? 'this attribute') +
+      '? This action cannot be undone.'
+    "
+    confirmText="Delete"
+    cancelText="Cancel"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()" />
+
 </div>

@@ -1,26 +1,26 @@
 <header
-  class="sticky top-0 z-50 flex items-center justify-between
-         border-b border-gray-200 bg-white px-6 py-4 shadow-sm"
->
-  <!-- Application branding and navigation -->
-  <div class="flex items-center gap-10">
+  class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white shadow-sm">
+
+  <!-- Main Header -->
+  <div
+    class="mx-auto flex min-h-16 w-full max-w-[1600px] items-center justify-between gap-3 px-3 py-3 sm:px-5 lg:px-8">
+
+    <!-- Branding -->
     <a
       routerLink="/attributes"
-      class="text-xl font-bold tracking-tight text-gray-800"
-    >
-      Attribute Management
+      class="min-w-0 shrink text-lg font-bold tracking-tight text-gray-800 sm:text-xl">
+      <span class="block truncate">Attribute Management</span>
     </a>
 
     @if (isAuthenticated$ | async) {
-      <nav class="flex items-center gap-2">
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden items-center gap-2 md:flex">
         <a
           routerLink="/dashboard"
           routerLinkActive="bg-blue-50 text-blue-700"
           [routerLinkActiveOptions]="{ exact: true }"
-          class="rounded-lg px-4 py-2 text-sm font-medium
-                 text-gray-600 transition hover:bg-gray-100
-                 hover:text-gray-900"
-        >
+          class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">
           Dashboard
         </a>
 
@@ -28,18 +28,83 @@
           routerLink="/attributes"
           routerLinkActive="bg-blue-50 text-blue-700"
           [routerLinkActiveOptions]="{ exact: true }"
-          class="rounded-lg px-4 py-2 text-sm font-medium
-                 text-gray-600 transition hover:bg-gray-100
-                 hover:text-gray-900"
-        >
+          class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">
           Attributes
         </a>
       </nav>
+
+      <!-- User Profile -->
+      <div class="ml-auto flex shrink-0 items-center gap-2">
+        <app-user-profile />
+
+        <!-- Mobile Menu Toggle -->
+        <button
+          type="button"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-100 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 md:hidden"
+          [attr.aria-expanded]="isMobileMenuOpen"
+          aria-label="Toggle navigation menu"
+          (click)="toggleMobileMenu()">
+
+          @if (isMobileMenuOpen) {
+            <!-- Close Icon -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          } @else {
+            <!-- Hamburger Icon -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          }
+        </button>
+      </div>
     }
   </div>
 
-  <!-- User profile -->
-  @if (isAuthenticated$ | async) {
-    <app-user-profile />
+  <!-- Mobile Navigation -->
+  @if ((isAuthenticated$ | async) && isMobileMenuOpen) {
+    <nav
+      class="border-t border-gray-100 bg-white px-3 py-3 sm:px-5 md:hidden">
+
+      <div class="flex flex-col gap-1">
+
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="bg-blue-50 text-blue-700"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMobileMenu()"
+          class="rounded-lg px-4 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-100">
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/attributes"
+          routerLinkActive="bg-blue-50 text-blue-700"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMobileMenu()"
+          class="rounded-lg px-4 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-100">
+          Attributes
+        </a>
+
+      </div>
+    </nav>
   }
 </header>
