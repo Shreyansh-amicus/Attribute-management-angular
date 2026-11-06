@@ -1,0 +1,69 @@
+@if (isOpen) {
+  <div
+    class="fixed inset-0 z-10000 flex items-center justify-center bg-black/50 p-4"
+    (click)="onCancel()"
+  >
+    <div
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="confirm-dialog-title"
+      aria-describedby="confirm-dialog-message"
+      class="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-start gap-4">
+
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
+          <svg
+            class="h-6 w-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.7 3.86a2 2 0 00-3.4 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <div class="flex-1">
+          <h2
+            id="confirm-dialog-title"
+            class="text-lg font-semibold text-gray-900"
+          >
+            {{ title }}
+          </h2>
+
+          <p
+            id="confirm-dialog-message"
+            class="mt-2 text-sm leading-6 text-gray-600"
+          >
+            {{ message }}
+          </p>
+        </div>
+
+      </div>
+
+      <div class="mt-7 flex justify-end gap-3">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+        >
+          {{ cancelText }}
+        </button>
+
+        <button
+          type="button"
+          (click)="onConfirm()"
+          class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+        >
+          {{ confirmText }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

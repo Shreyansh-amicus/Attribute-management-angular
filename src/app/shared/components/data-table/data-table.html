@@ -1,0 +1,154 @@
+<div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-225 divide-y divide-gray-200">
+
+      <!-- Table header -->
+      <thead class="bg-gray-50">
+        <tr>
+          @for (column of columns; track column.key) {
+            <th
+              scope="col"
+              class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+            >
+              @if (column.sortable) {
+                <button
+                  type="button"
+                  (click)="onSort(column)"
+                  class="inline-flex items-center gap-2 transition hover:text-blue-600"
+                >
+                  {{ column.label }}
+
+                  @if (sortBy === column.sortBy) {
+                    <span>
+                      {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                    </span>
+                  } @else {
+                    <span class="text-gray-400">↕</span>
+                  }
+                </button>
+              } @else {
+                {{ column.label }}
+              }
+            </th>
+          }
+
+          @if (canManage) {
+            <th
+              scope="col"
+              class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-600"
+            >
+              Actions
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody class="divide-y divide-gray-100 bg-white">
+
+        @for (row of rows; track row.AttributeId) {
+          <tr class="transition hover:bg-gray-50">
+
+            @for (column of columns; track column.key) {
+              <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-700">
+
+                @if (column.key === 'IsActive') {
+                  <span
+                    class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                    [class.bg-green-100]="row.IsActive"
+                    [class.text-green-700]="row.IsActive"
+                    [class.bg-red-100]="!row.IsActive"
+                    [class.text-red-700]="!row.IsActive"
+                  >
+                    {{ getCellValue(row, column.key) }}
+                  </span>
+                } @else {
+                  {{ getCellValue(row, column.key) }}
+                }
+
+              </td>
+            }
+
+            @if (canManage) {
+              <td class="whitespace-nowrap px-5 py-4 text-right">
+                <div class="flex justify-end gap-2">
+
+                  <button
+                    type="button"
+                    (click)="edit.emit(row)"
+                    class="rounded-lg px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="delete.emit(row)"
+                    class="rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+                  >
+                    Delete
+                  </button>
+
+                </div>
+              </td>
+            }
+
+          </tr>
+        } @empty {
+          <tr>
+            <td
+              [attr.colspan]="columns.length + (canManage ? 1 : 0)"
+              class="px-6 py-12 text-center text-sm text-gray-500"
+            >
+              No attributes found.
+            </td>
+          </tr>
+        }
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div
+    class="flex flex-col gap-4 border-t border-gray-200 bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p class="text-sm text-gray-600">
+      Showing
+      <span class="font-semibold">{{ startItem }}</span>
+      to
+      <span class="font-semibold">{{ endItem }}</span>
+      of
+      <span class="font-semibold">{{ totalItems }}</span>
+      attributes
+    </p>
+
+    <div class="flex items-center gap-3">
+
+      <button
+        type="button"
+        (click)="previousPage()"
+        [disabled]="page <= 1"
+        class="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Previous
+      </button>
+
+      <span class="text-sm font-medium text-gray-700">
+        Page {{ page }} of {{ totalPages }}
+      </span>
+
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="page >= totalPages"
+        class="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Next
+      </button>
+
+    </div>
+  </div>
+
+</div>

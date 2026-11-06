@@ -15,6 +15,19 @@ import { ActivityLogService } from './activity-log-service';
 import { CreateActivityLogDTO } from '../../shared/models/activity-log-dto';
 import { ActivityAction } from '../../shared/models/activity-log-model';
 
+export interface AttributePageRequest {
+  page: number;
+  pageSize: number;
+  sortBy: string;
+  sortDirection: 'asc' | 'desc';
+  searchTerm?: string;
+}
+
+export interface AttributePageResult {
+  items: IAttributeModel[];
+  totalCount: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })

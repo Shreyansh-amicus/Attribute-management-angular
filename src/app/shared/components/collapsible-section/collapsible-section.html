@@ -1,0 +1,38 @@
+<section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+  <!-- Header slot -->
+  <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+    <div class="min-w-0 flex-1">
+      <ng-content select="[header]" />
+    </div>
+
+    <button
+      type="button"
+      (click)="toggle()"
+      [attr.aria-expanded]="expanded"
+      class="ml-4 rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
+      [attr.aria-label]="expanded ? 'Collapse section' : 'Expand section'"
+    >
+      <svg
+        class="h-5 w-5 transition-transform duration-200"
+        [class.rotate-180]="expanded"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          d="M19 9l-7 7-7-7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Body slot -->
+  <div [hidden]="!expanded" class="p-6">
+    <ng-content select="[body]" />
+  </div>
+
+</section>
