@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
+
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  inject,
+} from '@angular/core';
+
 import { AsyncPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -18,8 +26,6 @@ import {
 } from 'rxjs';
 
 import { AttributeCard } from '../../../../shared/components/attribute-card/attribute-card';
-import { AppActiveStatus } from '../../../../shared/directives/app-active-status';
-import { RelativeTimePipe } from '../../../../shared/pipes/relative-time-pipe';
 
 import { AttributeService } from '../../../../core/services/attribute-service';
 import { StoreService } from '../../../../core/services/store';
@@ -36,6 +42,7 @@ import {
 } from '../../../../core/services/attribute-service';
 
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+
 import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
 
 @Component({
@@ -51,7 +58,7 @@ import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
   ],
   styleUrl: './attribute-list.css',
   templateUrl: './attribute-list.html',
-  changeDetection : ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AttributeList {
   private readonly attributeService = inject(AttributeService);
@@ -62,6 +69,9 @@ export class AttributeList {
 
   // Role information from the centralized store.
   readonly isAdmin$ = this.store.isAdmin$;
+
+  // Refresh state.
+  isRefreshing = false;
 
   // Table columns.
   readonly tableColumns: DataTableColumn[] = [
@@ -145,6 +155,28 @@ export class AttributeList {
   }
 
   // ------------------------------------
+  // Refresh attributes
+  // ------------------------------------
+
+  refreshAttributes(): void {
+    if (this.isRefreshing || this.tableLoading) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.isRefreshing = true;
+
+    this.cdr.markForCheck();
+
+    // Re-emit the existing query.
+    // This preserves the current page, page size,
+    // sorting and search term.
+    this.tableQuerySubject.next({
+      ...this.tableQuerySubject.value,
+    });
+  }
+
+  // ------------------------------------
   // Load API data based on current query
   // ------------------------------------
 
@@ -153,32 +185,66 @@ export class AttributeList {
       .pipe(
         switchMap((query) => {
           this.tableLoading = true;
+          this.errorMessage = '';
+
+          this.cdr.markForCheck();
 
           return this.attributeService.getAttributesPage(query).pipe(
             catchError((error) => {
               console.error('Unable to load attribute page:', error);
-              this.cdr.markForCheck();
-              this.errorMessage = 'Unable to load attributes. Please try again later.';
+
+              this.errorMessage =
+                'Unable to load attributes. Please try again later.';
 
               return of({
                 items: [],
                 totalCount: 0,
               } as AttributePageResult);
             }),
+
             finalize(() => {
               this.tableLoading = false;
               this.isSearching = false;
+              this.isRefreshing = false;
+
+              this.cdr.markForCheck();
             }),
           );
         }),
+
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((result) => {
+        // ------------------------------------
+        // DOM tracking test diagnostics
+        // ------------------------------------
+
+        const sameObjectReferences = this.tableAttributes.filter(
+          (oldAttribute) =>
+            result.items.some(
+              (newAttribute) => oldAttribute === newAttribute
+            )
+        ).length;
+
+        const matchingIds = this.tableAttributes.filter(
+          (oldAttribute) =>
+            result.items.some(
+              (newAttribute) =>
+                oldAttribute.AttributeId === newAttribute.AttributeId
+            )
+        ).length;
+
+        console.log('Same object references:', sameObjectReferences);
+        console.log('Matching IDs:', matchingIds);
+
+        // Update the current page.
         this.tableAttributes = result.items;
         this.totalTableItems = result.totalCount;
+
         console.log('API response:', result);
         console.log('Table attributes:', this.tableAttributes);
         console.log('Total items:', this.totalTableItems);
+
         this.cdr.markForCheck();
       });
   }
@@ -192,16 +258,14 @@ export class AttributeList {
       .pipe(
         map((term) => term.trim()),
 
-        // Ignore consecutive identical search terms.
         distinctUntilChanged(),
 
-        // Show the indicator immediately while the user types.
         tap(() => {
           this.errorMessage = '';
           this.isSearching = true;
+          this.cdr.markForCheck();
         }),
 
-        // Wait until the user stops typing.
         debounceTime(300),
 
         takeUntilDestroyed(this.destroyRef),
@@ -256,7 +320,11 @@ export class AttributeList {
       return;
     }
 
-    void this.router.navigate(['/attributes', attribute.AttributeId,'edit']);
+    void this.router.navigate([
+      '/attributes',
+      attribute.AttributeId,
+      'edit',
+    ]);
   }
 
   // ------------------------------------
@@ -306,10 +374,14 @@ export class AttributeList {
             page: nextPage,
           });
         },
+
         error: (error) => {
           console.error('Unable to delete attribute:', error);
 
-          this.errorMessage = 'Unable to delete the attribute. Please try again.';
+          this.errorMessage =
+            'Unable to delete the attribute. Please try again.';
+
+          this.cdr.markForCheck();
         },
       });
   }

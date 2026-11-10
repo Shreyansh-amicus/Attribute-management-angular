@@ -3,9 +3,10 @@ import { IAttributeModel } from '../../models/IAttribute.model';
 import { RelativeTimePipe } from '../../pipes/relative-time-pipe';
 import { AppActiveStatus } from '../../directives/app-active-status';
 import { RouterLink } from '@angular/router';
+import { NgFor } from '@angular/common';
 
 @Component({
-  imports: [RelativeTimePipe, AppActiveStatus, RouterLink],
+  imports: [RelativeTimePipe, AppActiveStatus, RouterLink, NgFor],
   selector: 'app-attribute-card',
   styleUrl: './attribute-card.css',
   templateUrl: './attribute-card.html',

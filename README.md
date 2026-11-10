@@ -1128,3 +1128,149 @@ The application now has a single store for shared attribute data, lookup informa
 All state updates follow an immutable approach using the spread operator, `map()`, and `filter()`.
 
 This implementation reduces duplicated state across components, improves consistency, and provides a foundation for more advanced state management solutions such as NgRx.
+
+## Assignment 3
+
+### Task 7 - Add trackBy to every *ngFor
+
+### Task 7 – TrackBy and DOM Optimization
+
+#### Objective
+
+Improve list-rendering performance by using Angular's tracking functionality to minimize unnecessary DOM node recreation when a collection is refreshed from the API.
+
+The task also involves adding a Refresh button to reload attributes and comparing DOM behavior with and without stable tracking.
+
+#### 1. Implementation
+
+This project uses Angular's modern `@for` control flow syntax instead of the older `*ngFor` directive.
+
+Angular's `@for` requires a `track` expression, which serves the same purpose as `trackBy` in `*ngFor`.
+
+The attribute card list uses:
+
+```html
+@for (attr of tableAttributes; track attr.AttributeId) {
+  <app-attribute-card
+    [attribute]="attr"
+    [canManage]="(isAdmin$ | async) === true"
+  />
+}
+```
+
+Here, `AttributeId` is used as the unique identifier for each attribute.
+
+Angular uses this identifier to determine whether an item already exists in the rendered collection or whether it needs to create a new DOM node.
+
+#### 2. Refresh Button
+
+A Refresh button was added to reload attributes from the API.
+
+Instead of retrieving the entire collection, the refresh functionality re-emits the current pagination query through `tableQuerySubject`.
+
+```typescript
+refreshAttributes(): void {
+  if (this.isRefreshing || this.tableLoading) {
+    return;
+  }
+
+  this.isRefreshing = true;
+
+  this.tableQuerySubject.next({
+    ...this.tableQuerySubject.value,
+  });
+}
+```
+
+This preserves the existing:
+- Page number.
+- Page size.
+- Sorting column and direction.
+- Search term.
+
+The existing API-loading pipeline handles the request and updates the displayed records.
+
+The loading state was also adjusted so that existing records remain rendered while refreshing. This is important because removing the entire list during loading would destroy the existing DOM nodes before Angular could reuse them.
+
+#### 3. Testing Without Stable Tracking
+
+![Testing without stable tracking](screenshots/Track%20attr.png)
+
+To simulate the behavior without tracking by a unique identifier, the tracking expression was temporarily changed to:
+
+```html
+@for (attr of tableAttributes; track attr) {
+  <app-attribute-card
+    [attribute]="attr"
+  />
+}
+```
+
+This uses object identity (object reference) to identify items.
+
+When the Refresh button is clicked:
+1. The application fetches the attributes again from the API.
+2. The mapping service creates new JavaScript object instances.
+3. The new objects have different references from the previous objects.
+4. Angular treats them as new items and recreates their corresponding DOM nodes.
+
+**Expected result:** Existing DOM nodes are not reused when the API returns new object instances.
+
+#### 4. Testing With Stable Tracking
+
+![Testing with stable tracking](screenshots/Track%20attr.AttributeId.png)
+
+The tracking expression was restored to:
+
+```html
+@for (attr of tableAttributes; track attr.AttributeId) {
+  <app-attribute-card
+    [attribute]="attr"
+  />
+}
+```
+
+Angular now identifies records using their unique `AttributeId`.
+
+When the API returns new object instances with the same IDs:
+1. Angular matches the new records with the existing records.
+2. Existing DOM nodes are reused.
+3. Angular updates the component bindings where necessary.
+4. Only records that are added or removed require corresponding DOM creation or removal.
+
+**Expected result:** Existing DOM nodes are reused for records with matching IDs.
+
+#### 5. DOM Verification
+
+The comparison was performed using the browser Developer Tools console.
+
+Before refreshing, the existing card elements were stored:
+
+```javascript
+window.beforeRefresh = [
+  ...document.querySelectorAll('app-attribute-card')
+];
+```
+
+After clicking Refresh, the following code was executed:
+
+```javascript
+const afterRefresh = [
+  ...document.querySelectorAll('app-attribute-card')
+];
+
+console.log(
+  'Reused DOM nodes:',
+  window.beforeRefresh.filter(node =>
+    afterRefresh.includes(node)
+  ).length
+);
+```
+
+The comparison was performed twice:
+- First with `track attr`.
+- Then with `track attr.AttributeId`.
+
+#### 6. Comparison
+
+Assuming the same 10 attributes are returned by the API and the

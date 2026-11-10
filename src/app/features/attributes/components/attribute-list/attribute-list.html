@@ -1,8 +1,10 @@
+
 <div class="mx-auto w-full min-w-0 max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
 
   <!-- Page Header -->
-  <div class="mb-6 flex min-w-0 flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
-
+  <div
+    class="mb-6 flex min-w-0 flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between"
+  >
     <div class="min-w-0">
       <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
         Attribute List
@@ -20,15 +22,17 @@
       @if (isAdmin$ | async) {
         <a
           routerLink="/attributes/add"
-          class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 sm:w-auto">
+          class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 sm:w-auto"
+        >
           <span class="text-lg leading-none" aria-hidden="true">+</span>
           Add Attribute
         </a>
       }
 
       <!-- View Toggle -->
-      <div class="flex w-full items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm sm:w-auto">
-
+      <div
+        class="flex w-full items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm sm:w-auto"
+      >
         <span class="text-sm font-medium text-gray-600">
           {{ isTableView ? 'Table view' : 'Card view' }}
         </span>
@@ -41,17 +45,16 @@
           (click)="onClick()"
           class="relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
           [class.bg-blue-600]="isTableView"
-          [class.bg-violet-600]="!isTableView">
-
+          [class.bg-violet-600]="!isTableView"
+        >
           <span
             class="pointer-events-none inline-flex h-6 w-6 transform items-center justify-center rounded-full bg-white shadow-md ring-1 ring-black/5 transition-transform duration-300 ease-in-out"
             [class.translate-x-1]="isTableView"
-            [class.translate-x-7]="!isTableView">
-
+            [class.translate-x-7]="!isTableView"
+          >
             <span class="text-[10px] font-bold text-gray-600">
               {{ isTableView ? 'T' : 'C' }}
             </span>
-
           </span>
         </button>
       </div>
@@ -60,8 +63,10 @@
 
   <!-- Search -->
   <div class="mb-6 w-full min-w-0">
-
-    <label for="attributeSearch" class="mb-2 block text-sm font-semibold text-gray-700">
+    <label
+      for="attributeSearch"
+      class="mb-2 block text-sm font-semibold text-gray-700"
+    >
       Search attributes
     </label>
 
@@ -71,7 +76,8 @@
         type="search"
         [formControl]="searchControl"
         placeholder="Search by attribute name or business unit..."
-        class="w-full min-w-0 rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" />
+        class="w-full min-w-0 rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+      />
     </div>
 
     <p class="mt-2 text-xs text-gray-500">
@@ -83,20 +89,46 @@
         Searching...
       </p>
     }
+
+    <!-- Refresh Button -->
+    <button
+      type="button"
+      (click)="refreshAttributes()"
+      [disabled]="isRefreshing || tableLoading"
+      class="mt-4 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      @if (isRefreshing) {
+        Refreshing...
+      } @else {
+        Refresh
+      }
+    </button>
+
+    <!-- Refresh Indicator -->
+    @if (isRefreshing) {
+      <p class="mt-2 text-sm text-blue-600" role="status">
+        Updating attributes from the API...
+      </p>
+    }
   </div>
 
   <!-- Error State -->
   @if (errorMessage) {
-    <div class="rounded-xl border border-red-200 bg-red-50 p-5 sm:p-8" role="alert">
+    <div
+      class="rounded-xl border border-red-200 bg-red-50 p-5 sm:p-8"
+      role="alert"
+    >
       <p class="text-sm font-semibold text-red-700">
         {{ errorMessage }}
       </p>
     </div>
   }
 
-  <!-- Loading State -->
-  @else if (tableLoading) {
-    <div class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+  <!-- Initial Loading State -->
+  @else if (tableLoading && tableAttributes.length === 0) {
+    <div
+      class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm"
+    >
       <p class="text-sm font-medium text-gray-600">
         Loading attributes...
       </p>
@@ -105,7 +137,9 @@
 
   <!-- Empty State -->
   @else if (tableAttributes.length === 0) {
-    <div class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm sm:p-12">
+    <div
+      class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm sm:p-12"
+    >
       <p class="text-sm font-medium text-gray-600">
         No attributes found.
       </p>
@@ -118,7 +152,9 @@
 
   <!-- Data View -->
   @else {
+
     @if (isTableView) {
+
       <!-- Table View -->
       <div class="w-full min-w-0 overflow-x-auto">
         <app-data-table
@@ -133,18 +169,27 @@
           (sortChange)="onTableSortChange($event)"
           (pageChange)="onTablePageChange($event)"
           (edit)="onEditAttribute($event)"
-          (delete)="requestDelete($event)" />
+          (delete)="requestDelete($event)"
+        />
       </div>
-    }
 
-    @else {
+    } @else {
+
       <!-- Card View -->
-      <div class="grid min-w-0 grid-cols-1 items-stretch gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
+      <div
+        class="grid min-w-0 grid-cols-1 items-stretch gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+      >
 
         @for (attr of tableAttributes; track attr.AttributeId) {
           <app-attribute-card
+            [attr.data-attribute-id]="attr.AttributeId"
             [attribute]="attr"
-            [canManage]="(isAdmin$ | async) === true" />
+            [canManage]="(isAdmin$ | async) === true"
+          />
+        } @empty {
+          <p class="col-span-full py-10 text-center text-gray-500">
+            No attributes available.
+          </p>
         }
 
       </div>
@@ -163,6 +208,7 @@
     confirmText="Delete"
     cancelText="Cancel"
     (confirmed)="confirmDelete()"
-    (cancelled)="cancelDelete()" />
+    (cancelled)="cancelDelete()"
+  />
 
 </div>
