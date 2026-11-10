@@ -1,5 +1,5 @@
 
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -10,7 +10,8 @@ import { UserRole } from '../../../core/services/store';
   selector: 'app-login',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './login.html'
+  templateUrl: './login.html',
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class Login {
   private readonly authService = inject(AuthService);

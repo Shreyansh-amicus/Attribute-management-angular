@@ -1,6 +1,6 @@
 
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth-service';
@@ -13,7 +13,8 @@ import { RoleBadgeDirective } from '../../directives/role-badge';
     AsyncPipe,
     RoleBadgeDirective
   ],
-  templateUrl: './user-profile.html'
+  templateUrl: './user-profile.html',
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class UserProfile {
   private readonly authService = inject(AuthService);

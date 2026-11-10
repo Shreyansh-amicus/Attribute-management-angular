@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectedAttributeService } from '../../../../core/services/selected-attribute';
 
 @Component({
   selector: 'app-subject-demo',
   standalone: true,
   template: `<p>Open the console to see the Subject demonstration.</p>`,
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class SubjectDemo {
   private readonly selectedAttributeService =

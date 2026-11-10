@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 
-import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,6 +23,7 @@ import { ToastService } from '../../../../core/services/toast-service';
   imports: [AsyncPipe, FormsModule],
   templateUrl: './edit-attribute.html',
   styleUrl: './edit-attribute.css',
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class EditAttribute implements OnInit {
   private readonly route = inject(ActivatedRoute);

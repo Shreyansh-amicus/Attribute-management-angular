@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { IAttributeModel } from '../../models/IAttribute.model';
 
@@ -20,6 +20,7 @@ export interface SortChange {
   selector: 'app-data-table',
   standalone: true,
   templateUrl: './data-table.html',
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class DataTableComponent {
 

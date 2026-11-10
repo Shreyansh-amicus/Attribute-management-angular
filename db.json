@@ -9,7 +9,7 @@
       "is_active": false,
       "created_on": "2025-03-22T14:15:00.000Z",
       "created_by": "David Chen",
-      "updated_on": "2026-11-06T11:15:34.801Z",
+      "updated_on": "2026-11-10T07:23:46.912Z",
       "updated_by": "Admin"
     },
     {
@@ -215,6 +215,26 @@
       "created_on": "2026-11-06T11:11:41.356Z",
       "created_by": "Admin",
       "attribute_id": 122
+    },
+    {
+      "attribute_name": "New attribute for testing",
+      "business_unit_name": "Finance",
+      "company_name": "Acme Corp",
+      "customer_location_name": "New York, USA",
+      "is_active": true,
+      "created_on": "2026-11-10T07:24:40.220Z",
+      "created_by": "Admin",
+      "attribute_id": 123
+    },
+    {
+      "attribute_name": "New attribute for testing purposes",
+      "business_unit_name": "Marketing",
+      "company_name": "Acme Corp",
+      "customer_location_name": "Singapore",
+      "is_active": false,
+      "created_on": "2026-11-10T07:26:31.674Z",
+      "created_by": "Admin",
+      "attribute_id": 124
     }
   ],
   "businessUnits": [
@@ -448,6 +468,78 @@
       "performed_by": "Shreyansh",
       "timestamp": "2026-11-06T11:15:34.821Z",
       "attribute_id": 140
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 102,
+      "attribute_name": "Employee Onboarding Status",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-10T07:23:28.720Z",
+      "attribute_id": 141
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 102,
+      "attribute_name": "Employee Onboarding Status edited",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-10T07:23:46.951Z",
+      "attribute_id": 142
+    },
+    {
+      "action": "CREATE",
+      "related_attribute_id": 123,
+      "attribute_name": "New attribute for testing",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-10T07:24:05.038Z",
+      "attribute_id": 143
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 123,
+      "attribute_name": "New attribute for testing",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-10T07:24:21.087Z",
+      "attribute_id": 144
+    },
+    {
+      "action": "CREATE",
+      "related_attribute_id": 123,
+      "attribute_name": "New attribute for testing",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-10T07:24:40.254Z",
+      "attribute_id": 145
+    },
+    {
+      "action": "CREATE",
+      "related_attribute_id": 124,
+      "attribute_name": "New attribute for testing purposes",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-10T07:26:31.705Z",
+      "attribute_id": 146
+    },
+    {
+      "action": "CREATE",
+      "related_attribute_id": 125,
+      "attribute_name": "New attribute for testing purposes after auth",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-10T07:28:47.700Z",
+      "attribute_id": 147
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 125,
+      "attribute_name": "New attribute for testing purposes after auth edit",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-10T07:29:04.416Z",
+      "attribute_id": 148
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 125,
+      "attribute_name": "New attribute for testing purposes after auth edit",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-10T07:29:12.457Z",
+      "attribute_id": 149
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 import { combineLatest, map } from 'rxjs';
@@ -50,6 +50,7 @@ interface DashboardViewModel {
     CollapsibleSectionComponent,
   ],
   templateUrl: './dashboard.html',
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class Dashboard implements OnInit {
   private readonly store = inject(StoreService);

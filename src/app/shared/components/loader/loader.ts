@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LoadingService } from '../../../core/services/loading-service';
 
 @Component({
@@ -7,7 +7,8 @@ import { LoadingService } from '../../../core/services/loading-service';
   standalone: true,
   imports: [AsyncPipe],
   templateUrl: './loader.html',
-  styleUrl: './loader.css'
+  styleUrl: './loader.css',
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class Loader {
   private readonly loadingService = inject(LoadingService);

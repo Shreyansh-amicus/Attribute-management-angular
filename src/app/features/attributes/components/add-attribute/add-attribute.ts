@@ -3,6 +3,7 @@ import {
 } from '@angular/common';
 
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   DestroyRef,
@@ -38,6 +39,7 @@ import { StoreService } from '../../../../core/services/store';
   imports: [AsyncPipe, ReactiveFormsModule, RouterLink],
   styleUrl: './add-attribute.css',
   templateUrl: './add-attribute.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddAttributePage implements OnInit {
   private readonly lookupService = inject(Lookup);

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -51,6 +51,7 @@ import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
   ],
   styleUrl: './attribute-list.css',
   templateUrl: './attribute-list.html',
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class AttributeList {
   private readonly attributeService = inject(AttributeService);

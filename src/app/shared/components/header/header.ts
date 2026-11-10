@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -15,6 +15,7 @@ import { UserProfile } from '../user-profile/user-profile';
     UserProfile,
   ],
   templateUrl: './header.html',
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class Header {
   private readonly authService = inject(AuthService);
