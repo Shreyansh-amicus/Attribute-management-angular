@@ -1,0 +1,81 @@
+
+<section class="mt-10 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+
+  <!-- Heading -->
+  <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h3 class="text-xl font-bold text-gray-900">
+        Virtual Scrolling Demonstration
+      </h3>
+
+      <p class="mt-1 text-sm text-gray-500">
+        Demonstrating virtual scrolling with 250 generated mock attributes.
+      </p>
+    </div>
+
+    <div class="rounded-lg bg-blue-50 px-4 py-3">
+      <p class="text-sm font-medium text-blue-800">
+        Total attributes: {{ mockAttributes.length }}
+      </p>
+
+      <p class="mt-1 text-sm font-medium text-blue-800">
+        Currently rendered: {{ renderedItemCount }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Virtual Scroll Viewport -->
+  <cdk-virtual-scroll-viewport
+    itemSize="64"
+    minBufferPx="64"
+    maxBufferPx="512"
+    class="h-120 w-full rounded-xl border border-gray-200 bg-gray-50"
+  >
+
+    <div
+      *cdkVirtualFor="
+        let attr of mockAttributes;
+        trackBy: trackByAttributeId
+      "
+      [attr.data-virtual-attribute]="attr.AttributeId"
+      class="flex h-16 box-border items-center justify-between gap-3 border-b border-gray-200 bg-white px-4"
+    >
+
+      <!-- Attribute Details -->
+      <div class="min-w-0 flex-1">
+        <p class="truncate text-sm font-semibold text-gray-900">
+          {{ attr.AttributeName }}
+        </p>
+
+        <p class="truncate text-xs text-gray-500">
+          {{ attr.BusinessUnitName }} ·
+          {{ attr.CompanyName }}
+        </p>
+      </div>
+
+      <!-- Attribute Status -->
+      <span
+        class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold"
+        [class.bg-green-100]="attr.IsActive"
+        [class.text-green-700]="attr.IsActive"
+        [class.bg-red-100]="!attr.IsActive"
+        [class.text-red-700]="!attr.IsActive"
+      >
+        {{ attr.IsActive ? 'Active' : 'Inactive' }}
+      </span>
+
+      <span class="shrink-0 text-xs text-gray-400">
+        #{{ attr.AttributeId }}
+      </span>
+
+    </div>
+
+  </cdk-virtual-scroll-viewport>
+
+  <!-- Explanation -->
+  <p class="mt-4 text-sm text-gray-500">
+    Scroll through the list. Angular CDK renders only the visible items
+    and a small buffer rather than creating DOM elements for all 250 records.
+  </p>
+
+</section>

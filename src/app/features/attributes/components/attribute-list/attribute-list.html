@@ -1,6 +1,4 @@
-
 <div class="mx-auto w-full min-w-0 max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
-
   <!-- Page Header -->
   <div
     class="mb-6 flex min-w-0 flex-col gap-5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between"
@@ -10,14 +8,11 @@
         Attribute List
       </h2>
 
-      <p class="mt-2 text-sm text-gray-500">
-        View and explore your available attributes.
-      </p>
+      <p class="mt-2 text-sm text-gray-500">View and explore your available attributes.</p>
     </div>
 
     <!-- Actions -->
     <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
-
       <!-- Add Attribute: Admin only -->
       @if (isAdmin$ | async) {
         <a
@@ -63,10 +58,7 @@
 
   <!-- Search -->
   <div class="mb-6 w-full min-w-0">
-    <label
-      for="attributeSearch"
-      class="mb-2 block text-sm font-semibold text-gray-700"
-    >
+    <label for="attributeSearch" class="mb-2 block text-sm font-semibold text-gray-700">
       Search attributes
     </label>
 
@@ -80,14 +72,10 @@
       />
     </div>
 
-    <p class="mt-2 text-xs text-gray-500">
-      Search matches attributes returned by the API.
-    </p>
+    <p class="mt-2 text-xs text-gray-500">Search matches attributes returned by the API.</p>
 
     @if (isSearching) {
-      <p class="mt-2 text-sm font-medium text-blue-600" role="status">
-        Searching...
-      </p>
+      <p class="mt-2 text-sm font-medium text-blue-600" role="status">Searching...</p>
     }
 
     <!-- Refresh Button -->
@@ -106,18 +94,13 @@
 
     <!-- Refresh Indicator -->
     @if (isRefreshing) {
-      <p class="mt-2 text-sm text-blue-600" role="status">
-        Updating attributes from the API...
-      </p>
+      <p class="mt-2 text-sm text-blue-600" role="status">Updating attributes from the API...</p>
     }
   </div>
 
   <!-- Error State -->
   @if (errorMessage) {
-    <div
-      class="rounded-xl border border-red-200 bg-red-50 p-5 sm:p-8"
-      role="alert"
-    >
+    <div class="rounded-xl border border-red-200 bg-red-50 p-5 sm:p-8" role="alert">
       <p class="text-sm font-semibold text-red-700">
         {{ errorMessage }}
       </p>
@@ -126,35 +109,23 @@
 
   <!-- Initial Loading State -->
   @else if (tableLoading && tableAttributes.length === 0) {
-    <div
-      class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm"
-    >
-      <p class="text-sm font-medium text-gray-600">
-        Loading attributes...
-      </p>
+    <div class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+      <p class="text-sm font-medium text-gray-600">Loading attributes...</p>
     </div>
   }
 
   <!-- Empty State -->
   @else if (tableAttributes.length === 0) {
-    <div
-      class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm sm:p-12"
-    >
-      <p class="text-sm font-medium text-gray-600">
-        No attributes found.
-      </p>
+    <div class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm sm:p-12">
+      <p class="text-sm font-medium text-gray-600">No attributes found.</p>
 
-      <p class="mt-1 text-xs text-gray-400">
-        Try changing your search term.
-      </p>
+      <p class="mt-1 text-xs text-gray-400">Try changing your search term.</p>
     </div>
   }
 
   <!-- Data View -->
   @else {
-
     @if (isTableView) {
-
       <!-- Table View -->
       <div class="w-full min-w-0 overflow-x-auto">
         <app-data-table
@@ -172,14 +143,11 @@
           (delete)="requestDelete($event)"
         />
       </div>
-
     } @else {
-
       <!-- Card View -->
       <div
         class="grid min-w-0 grid-cols-1 items-stretch gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
       >
-
         @for (attr of tableAttributes; track attr.AttributeId) {
           <app-attribute-card
             [attr.data-attribute-id]="attr.AttributeId"
@@ -187,14 +155,14 @@
             [canManage]="(isAdmin$ | async) === true"
           />
         } @empty {
-          <p class="col-span-full py-10 text-center text-gray-500">
-            No attributes available.
-          </p>
+          <p class="col-span-full py-10 text-center text-gray-500">No attributes available.</p>
         }
-
       </div>
     }
   }
+
+  <!-- Virtual Scroll Demonstration -->
+  <app-virtual-scroll-demo />
 
   <!-- Delete Confirmation Dialog -->
   <app-confirm-dialog
@@ -210,5 +178,4 @@
     (confirmed)="confirmDelete()"
     (cancelled)="cancelDelete()"
   />
-
 </div>

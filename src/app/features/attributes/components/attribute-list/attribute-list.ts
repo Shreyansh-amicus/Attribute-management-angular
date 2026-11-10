@@ -44,6 +44,8 @@ import {
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog';
 
 import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
+import { VirtualScrollDemo } from '../../../../shared/components/virtual-scroll/virtual-scroll';
+
 
 @Component({
   selector: 'app-attribute-list',
@@ -55,6 +57,7 @@ import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
     AttributeCard,
     DataTableComponent,
     ConfirmDialogComponent,
+    VirtualScrollDemo
   ],
   styleUrl: './attribute-list.css',
   templateUrl: './attribute-list.html',
