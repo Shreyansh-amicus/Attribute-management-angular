@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -45,7 +44,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
 
 import { IAttributeModel } from '../../../../shared/models/IAttribute.model';
 import { VirtualScrollDemo } from '../../../../shared/components/virtual-scroll/virtual-scroll';
-
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-attribute-list',
@@ -57,7 +56,7 @@ import { VirtualScrollDemo } from '../../../../shared/components/virtual-scroll/
     AttributeCard,
     DataTableComponent,
     ConfirmDialogComponent,
-    VirtualScrollDemo
+    VirtualScrollDemo,
   ],
   styleUrl: './attribute-list.css',
   templateUrl: './attribute-list.html',
@@ -196,8 +195,7 @@ export class AttributeList {
             catchError((error) => {
               console.error('Unable to load attribute page:', error);
 
-              this.errorMessage =
-                'Unable to load attributes. Please try again later.';
+              this.errorMessage = 'Unable to load attributes. Please try again later.';
 
               return of({
                 items: [],
@@ -222,19 +220,14 @@ export class AttributeList {
         // DOM tracking test diagnostics
         // ------------------------------------
 
-        const sameObjectReferences = this.tableAttributes.filter(
-          (oldAttribute) =>
-            result.items.some(
-              (newAttribute) => oldAttribute === newAttribute
-            )
+        const sameObjectReferences = this.tableAttributes.filter((oldAttribute) =>
+          result.items.some((newAttribute) => oldAttribute === newAttribute),
         ).length;
 
-        const matchingIds = this.tableAttributes.filter(
-          (oldAttribute) =>
-            result.items.some(
-              (newAttribute) =>
-                oldAttribute.AttributeId === newAttribute.AttributeId
-            )
+        const matchingIds = this.tableAttributes.filter((oldAttribute) =>
+          result.items.some(
+            (newAttribute) => oldAttribute.AttributeId === newAttribute.AttributeId,
+          ),
         ).length;
 
         console.log('Same object references:', sameObjectReferences);
@@ -323,11 +316,7 @@ export class AttributeList {
       return;
     }
 
-    void this.router.navigate([
-      '/attributes',
-      attribute.AttributeId,
-      'edit',
-    ]);
+    void this.router.navigate(['/attributes', attribute.AttributeId, 'edit']);
   }
 
   // ------------------------------------
@@ -381,8 +370,7 @@ export class AttributeList {
         error: (error) => {
           console.error('Unable to delete attribute:', error);
 
-          this.errorMessage =
-            'Unable to delete the attribute. Please try again.';
+          this.errorMessage = 'Unable to delete the attribute. Please try again.';
 
           this.cdr.markForCheck();
         },

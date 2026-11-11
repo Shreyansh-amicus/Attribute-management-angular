@@ -74,24 +74,6 @@ export const requestInterceptor: HttpInterceptorFn = (req, next) => {
       }
     }),
 
-    catchError((error: HttpErrorResponse) => {
-
-      // Handle unauthorized requests.
-      if (error.status === 401) {
-        void router.navigate(['/login']);
-      }
-
-      // Handle internal server errors.
-      if (error.status === 500) {
-        toastService.error(
-          'Something went wrong on the server. Please try again later.'
-        );
-      }
-
-      // Pass the error to the calling service/component/resolver.
-      return throwError(() => error);
-    }),
-
     finalize(() => {
 
       // Decrement the counter after completion, error or cancellation.

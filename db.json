@@ -541,5 +541,21 @@
       "timestamp": "2026-11-10T07:29:12.457Z",
       "attribute_id": 149
     }
+  ],
+  "errorLogs": [
+    {
+      "attribute_id": 1794392215644000,
+      "message": "Access denied. Admin permission required.",
+      "source": "ROLE_GUARD: /attributes/add",
+      "status": 403,
+      "timestamp": "2026-11-11T10:16:55.644Z"
+    },
+    {
+      "attribute_id": 1794392302290000,
+      "message": "Not found",
+      "source": "GET http://localhost:3000/attributes/1022",
+      "status": 404,
+      "timestamp": "2026-11-11T10:18:22.290Z"
+    }
   ]
 }

@@ -1,0 +1,64 @@
+
+<section class="space-y-6 p-4 sm:p-6">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">
+        Application Error Logs
+      </h1>
+      <p class="mt-1 text-sm text-gray-500">
+        Review errors recorded during this application session.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      (click)="clearLogs()"
+      class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+    >
+      Clear Logs
+    </button>
+  </div>
+
+  @if (errorLogs$ | async; as logs) {
+    <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+      @if (logs.length > 0) {
+        <table class="w-full min-w-175 text-left text-sm">
+          <thead class="bg-gray-50 text-xs uppercase text-gray-500">
+            <tr>
+              <th class="px-4 py-3">Time</th>
+              <th class="px-4 py-3">Message</th>
+              <th class="px-4 py-3">Source</th>
+              <th class="px-4 py-3">HTTP Status</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-100">
+            @for (log of logs; track log.id) {
+              <tr class="hover:bg-gray-50">
+                <td class="whitespace-nowrap px-4 py-3 text-gray-600">
+                  {{ log.timestamp | date:'medium' }}
+                </td>
+
+                <td class="px-4 py-3 font-medium text-gray-900">
+                  {{ log.message }}
+                </td>
+
+                <td class="px-4 py-3 text-gray-600">
+                  {{ log.source }}
+                </td>
+
+                <td class="px-4 py-3 text-gray-600">
+                  {{ log.status ?? '—' }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <div class="p-10 text-center text-gray-500">
+          No errors have been recorded.
+        </div>
+      }
+    </div>
+  }
+</section>
