@@ -582,6 +582,90 @@
       "source": "GET http://localhost:3000/attributes/1022",
       "status": 404,
       "timestamp": "2026-11-11T10:18:22.290Z"
+    },
+    {
+      "attribute_id": 1794397137874000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:38:57.874Z"
+    },
+    {
+      "attribute_id": 1794397140027000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:39:00.027Z"
+    },
+    {
+      "attribute_id": 1794397141553000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:39:01.553Z"
+    },
+    {
+      "attribute_id": 1794397205647000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:40:05.647Z"
+    },
+    {
+      "attribute_id": 1794397207359000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:40:07.359Z"
+    },
+    {
+      "attribute_id": 1794397209010000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:40:09.010Z"
+    },
+    {
+      "attribute_id": 1794397216422000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:40:16.422Z"
+    },
+    {
+      "attribute_id": 1794397218176000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:40:18.176Z"
+    },
+    {
+      "attribute_id": 1794397219830000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:40:19.830Z"
+    },
+    {
+      "attribute_id": 1794397223527000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:40:23.527Z"
+    },
+    {
+      "attribute_id": 1794397225151000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:40:25.151Z"
+    },
+    {
+      "attribute_id": 1794397226869000,
+      "message": "Something went wrong. Please try again",
+      "source": "GET https://prod-api.com/attributes",
+      "status": 0,
+      "timestamp": "2026-11-11T11:40:26.869Z"
     }
   ]
 }

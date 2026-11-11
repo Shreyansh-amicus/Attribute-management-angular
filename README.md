@@ -1131,8 +1131,6 @@ This implementation reduces duplicated state across components, improves consist
 
 ## Assignment 3
 
-### Task 7 - Add trackBy to every *ngFor
-
 ### Task 7 – TrackBy and DOM Optimization
 
 #### Objective
