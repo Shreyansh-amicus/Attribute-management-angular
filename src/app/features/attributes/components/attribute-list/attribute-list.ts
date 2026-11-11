@@ -20,7 +20,7 @@ import {
   tap,
   switchMap,
   catchError,
-  of,
+  EMPTY,
   finalize,
 } from 'rxjs';
 
@@ -197,10 +197,7 @@ export class AttributeList {
 
               this.errorMessage = 'Unable to load attributes. Please try again later.';
 
-              return of({
-                items: [],
-                totalCount: 0,
-              } as AttributePageResult);
+              return EMPTY;
             }),
 
             finalize(() => {
@@ -216,30 +213,9 @@ export class AttributeList {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((result) => {
-        // ------------------------------------
-        // DOM tracking test diagnostics
-        // ------------------------------------
-
-        const sameObjectReferences = this.tableAttributes.filter((oldAttribute) =>
-          result.items.some((newAttribute) => oldAttribute === newAttribute),
-        ).length;
-
-        const matchingIds = this.tableAttributes.filter((oldAttribute) =>
-          result.items.some(
-            (newAttribute) => oldAttribute.AttributeId === newAttribute.AttributeId,
-          ),
-        ).length;
-
-        console.log('Same object references:', sameObjectReferences);
-        console.log('Matching IDs:', matchingIds);
-
         // Update the current page.
         this.tableAttributes = result.items;
         this.totalTableItems = result.totalCount;
-
-        console.log('API response:', result);
-        console.log('Table attributes:', this.tableAttributes);
-        console.log('Total items:', this.totalTableItems);
 
         this.cdr.markForCheck();
       });

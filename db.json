@@ -227,14 +227,16 @@
       "attribute_id": 123
     },
     {
+      "attribute_id": 124,
       "attribute_name": "New attribute for testing purposes",
       "business_unit_name": "Marketing",
       "company_name": "Acme Corp",
       "customer_location_name": "Singapore",
-      "is_active": false,
+      "is_active": true,
       "created_on": "2026-11-10T07:26:31.674Z",
       "created_by": "Admin",
-      "attribute_id": 124
+      "updated_on": "2026-11-11T10:55:42.707Z",
+      "updated_by": "Admin"
     }
   ],
   "businessUnits": [
@@ -540,6 +542,30 @@
       "performed_by": "Shreyansh",
       "timestamp": "2026-11-10T07:29:12.457Z",
       "attribute_id": 149
+    },
+    {
+      "action": "CREATE",
+      "related_attribute_id": 125,
+      "attribute_name": "Testing",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-11T10:55:16.584Z",
+      "attribute_id": 150
+    },
+    {
+      "action": "DELETE",
+      "related_attribute_id": 125,
+      "attribute_name": "Attribute #125",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-11T10:55:38.238Z",
+      "attribute_id": 151
+    },
+    {
+      "action": "EDIT",
+      "related_attribute_id": 124,
+      "attribute_name": "New attribute for testing purposes",
+      "performed_by": "Shreyansh",
+      "timestamp": "2026-11-11T10:55:42.732Z",
+      "attribute_id": 152
     }
   ],
   "errorLogs": [
